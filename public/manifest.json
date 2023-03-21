@@ -1,0 +1,22 @@
+{
+	"name": "valmi collaborative CDP",
+	"short_name": "valmi collaborative CDP",
+	"description": "valmi.io - A CDP that brings together Data Engineers, Data Scientists & Operational Executives",
+	"lang": "en-EN",
+	"start_url": "/",
+	"display": "standalone",
+	"theme_color": "#20a8d8",
+	"background_color": "#fff",
+	"icons": [
+		{
+			"src": "/icons/512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "/icons/192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		}
+	]
+}
