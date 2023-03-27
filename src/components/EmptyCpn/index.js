@@ -1,22 +1,25 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import React from "react";
 import PropTypes from "prop-types";
 import CustomButton from "../Button/Button";
-import { Empty } from "antd";
+import { Result } from "antd";
+import { SmileOutlined } from "@ant-design/icons";
 
 const EmptyCpn = (props) => {
-	const { title, btnTitle, onClick } = props;
+	const { title, btnTitle, onClick, icon } = props;
 	return (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
-				marginTop: 50,
-			}}
-		>
-			<Empty description={title} />
-			<CustomButton title={btnTitle} onClick={onClick} size="large" />
-		</div>
+		<Result
+			icon={icon}
+			title={title}
+			extra={
+				<CustomButton title={btnTitle} onClick={onClick} size="large" />
+			}
+		/>
 	);
 };
 

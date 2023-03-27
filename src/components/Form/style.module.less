@@ -1,6 +1,18 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 .input {
 	input:-webkit-autofill,
 	textarea:-webkit-autofill,
+	input:-webkit-autofill:focus,
+	input:-webkit-autofill:hover,
+	input:-webkit-autofill:active {
+		-webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+		-webkit-text-fill-color: #000;
+	}
 	select:-webkit-autofill {
 		-webkit-box-shadow: 0 0 0 1000px #fff inset !important;
 	}

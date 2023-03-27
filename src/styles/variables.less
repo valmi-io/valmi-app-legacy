@@ -1,5 +1,4 @@
 @import "~antd/lib/style/themes/compact.less";
-
 @font-family: "Poppins", "Roboto", sans-serif;
 @font-size-base: 15px;
 
@@ -8,13 +7,13 @@
 @info-color: @primary-color;
 @success-color: @green-6;
 @processing-color: @blue-6;
-@error-color: #106554;
+@error-color: #f5222d;
 @highlight-color: #106554;
 @warning-color: @gold-6;
 @normal-color: #d9d9d9;
 @white: #fff;
 @black: #000;
-@btn-height-lg: 44px;
+@btn-height-lg: 50px;
 @input-height-lg: 40px;
 @line-height-base: 1.9;
 @border-radius-base: 4px; // major border radius
@@ -24,3 +23,30 @@
 @menu-dark-item-active-bg: #171717;
 @menu-dark-item-active-danger-bg: @white;
 @menu-dark-danger-color: @white;
+
+// height rules
+@height-base: 32px;
+@height-lg: 40px;
+@height-sm: 24px;
+@select-dropdown-font-size: @font-size-base;
+@select-dropdown-height: 32px;
+
+@input-height-base: @height-lg;
+@input-padding-vertical-base: 2px;
+@input-padding-horizontal-base: 8px;
+
+.ant-input {
+	height: 50px;
+}
+
+/* Increase the height of the select dropdown menu */
+.ant-select-dropdown-menu {
+	padding: 8px 0; /* Adjust the padding to increase or decrease the height */
+}
+
+// /* Increase the height of the select input */
+// .ant-select-selector {
+// 	//	height: 30px; /* Adjust the height to increase or decrease the height */
+// 	//line-height: 50px; /* Make sure the text is vertically centered */
+// 	background-color: orange;
+// }

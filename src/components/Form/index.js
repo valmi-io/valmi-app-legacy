@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input } from "antd";
 import Link from "next/link";
@@ -19,11 +25,6 @@ const inputIcon = (type) => {
 		default:
 			return null;
 	}
-};
-
-const inputStyles = {
-	height: 50,
-	borderRadius: 10,
 };
 
 const FormCpn = (props) => {
@@ -48,14 +49,12 @@ const FormCpn = (props) => {
 					>
 						{input.type === "password" ? (
 							<Input.Password
-								style={inputStyles}
 								className={classes.input}
 								prefix={input.prefix && inputIcon(input.type)}
 								placeholder={input.label}
 							/>
 						) : (
 							<Input
-								style={inputStyles}
 								className={classes.input}
 								prefix={input.prefix && inputIcon(input.type)}
 								placeholder={input.label}

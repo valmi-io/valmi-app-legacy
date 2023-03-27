@@ -1,6 +1,8 @@
 {
 	"editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
-  "eslint.validate": ["javascript"],
+		"source.fixAll.eslint": true
+	},
+	"eslint.validate": ["javascript"],
+	"psi-header.changes-tracking": {},
+	"psi-header.templates": []
 }

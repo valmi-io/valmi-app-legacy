@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import React from "react";
 import PropTypes from "prop-types";
 import { Layout } from "antd";
@@ -14,14 +20,7 @@ const AuthLayout = (props) => {
 	const { children } = props;
 	return (
 		<>
-			<Layout
-				style={{
-					minHeight: "100vh",
-					backgroundColor: "#F5F2EB",
-					alignItems: "center",
-					justifyContent: "center",
-				}}
-			>
+			<Layout className="min-vh-100 align-items-center justify-content-center bg-light">
 				{children}
 			</Layout>
 		</>

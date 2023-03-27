@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import { ArrowRightOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Input, Space } from "antd";
 import Image from "next/image";
@@ -32,7 +38,7 @@ const ConnectionMapping = (props) => {
 	const [destinationSupportedSyncs, setDestinationSupportedSyncs] = useState(
 		[]
 	);
-	const [primaryKey, setPrimaryKey] = useState("");
+	const [primaryKey, setPrimaryKey] = useState(null);
 	const [fields, setFields] = useState([]);
 
 	useEffect(() => {
@@ -106,8 +112,9 @@ const ConnectionMapping = (props) => {
 		const {
 			connections: { name, type },
 		} = property;
-		setPrimaryKey(name);
-		setMappingMeta(warehouseSyncMode, destSyncmode, name);
+		console.log("Set ID key:_", name, type);
+		setPrimaryKey({ name, type });
+		setMappingMeta(warehouseSyncMode, destSyncmode, { name, type });
 	};
 
 	const setSyncMode = (mode, type) => {
@@ -126,7 +133,6 @@ const ConnectionMapping = (props) => {
 			title: appConstants.WAREHOUSE_FIELD,
 			dataIndex: "name",
 			render: (field) => {
-				//if (field === "id") return <span>{field}</span>;
 				return (
 					<DropdownCpn
 						onItemSelected={setWarehouseField}
@@ -275,6 +281,7 @@ const ConnectionMapping = (props) => {
 				bordered
 				onChange={onChange}
 				onClick={() => {}}
+				displayPagination={false}
 			/>
 			<div
 				style={{

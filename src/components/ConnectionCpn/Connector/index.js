@@ -1,8 +1,15 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import PropTypes from "prop-types";
 import { Card, Col, Row, Spin } from "antd";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useFetchConnectorsQuery } from "src/store/api/apiSlice";
+import Title from "src/components/Title";
 
 const ConnectorCpn = (props) => {
 	const { handleConnectorSelected, type } = props;
@@ -30,15 +37,8 @@ const ConnectorCpn = (props) => {
 	}
 
 	return (
-		<div>
-			<Row
-				gutter={12}
-				style={
-					{
-						//justifyContent: "center",
-					}
-				}
-			>
+		<div className="d-flex flex-column ml-2">
+			<Row gutter={12}>
 				{connectors &&
 					connectors.map((connector) => {
 						const type = connector.type.split("_")[1];

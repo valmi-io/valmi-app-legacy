@@ -21,13 +21,8 @@ const antdVariables = lessToJS(
 
 const nextConfig = withBundleAnalyzer(
 	withAntdLess({
-		// modifyVars: {
-		// 	'hack': 'true;@import "~antd/lib/style/themes/compact.less";',
-		// 	...antdVariables,
-		// },
 		lessVarsFilePath: "./src/styles/variables.less",
 		lessVarsFilePathAppendToEndOfContent: true,
-		// optional https://github.com/webpack-contrib/css-loader#object
 		cssLoaderOptions: {
 			modules: {
 				localIdentName:
@@ -36,7 +31,6 @@ const nextConfig = withBundleAnalyzer(
 						: "[hash:8]",
 			},
 		},
-
 		// for Next.js ONLY
 		nextjs: {
 			localIdentNameFollowDev: true, // default false, for easy to debug on PROD mode

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Tuesday, March 21st 2023, 2:07:22 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import { useEffect, useState } from "react";
 import DropdownCpn from "src/components/Dropdown";
 import { useLazyDiscoverConnectorQuery } from "src/store/api/apiSlice";
@@ -127,7 +133,7 @@ const ConnectionCpn = ({
 
 	const displayDropdown = (type, onItemSelected, connections, loading) => {
 		return (
-			<div key={type}>
+			<div key={type} className="text-left">
 				<span>{capitalizeFirstLetter(type)}</span>
 				<DropdownCpn
 					onItemSelected={onItemSelected}
@@ -141,7 +147,7 @@ const ConnectionCpn = ({
 	return (
 		<div
 			style={{
-				textAlign: "left",
+				//textAlign: "left",
 				borderRadius: 10,
 			}}
 		>

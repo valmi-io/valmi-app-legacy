@@ -1,32 +1,24 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import React from "react";
-// import PropTypes from 'prop-types';
-
 import Image from "next/image";
-
-const propTypes = {
-	// className: PropTypes.string,
-};
-
-const defaultProps = {
-	// className: {},
-};
 
 const Logo = (props) => {
 	const { ...attrs } = props;
 
 	return (
 		<Image
-			width={120}
-			height={120}
 			{...attrs}
 			src="/images/valmi_logo.svg"
 			alt="Logo"
+			priority={true}
+			loading="eager"
 		/>
 	);
 };
-
-Logo.propTypes = propTypes;
-
-Logo.defaultProps = defaultProps;
 
 export default Logo;

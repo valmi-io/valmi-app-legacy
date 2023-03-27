@@ -1,9 +1,17 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import { message, notification, Spin } from "antd";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import CustomButton from "src/components/Button/Button";
+import CardCpn from "src/components/Card";
+import PageLayout from "src/components/Layout/PageLayout";
 import StepCpn from "src/components/Step";
 import ConnectionCpn from "src/components/SyncCpn/Connection";
 import ConnectionMapping from "src/components/SyncCpn/Mapping";
@@ -15,7 +23,7 @@ import {
 	useFetchCredentialsQuery,
 	useLazyAddCredentialsQuery,
 } from "src/store/api/apiSlice";
-import { connectorTypes } from "src/utils/lib";
+import { connectorTypes, getRandomWord } from "src/utils/lib";
 
 const NewSync = (props) => {
 	const router = useRouter();
@@ -28,12 +36,12 @@ const NewSync = (props) => {
 	});
 
 	const [
-		addCredentials,
+		createSync,
 		{
-			data: credentialData,
-			isLoading: addCredentialLoading,
-			isError: addCredentialsError,
-			error: credentialError,
+			data: createSyncData,
+			isLoading: isCreateSyncLoading,
+			isError: isCreateSyncError,
+			error: createSyncError,
 		},
 	] = useLazyAddCredentialsQuery();
 
@@ -78,27 +86,27 @@ const NewSync = (props) => {
 	}, [data]);
 
 	useEffect(() => {
-		if (credentialData) {
+		if (createSyncData) {
 			console.log("=============================");
-			console.log("NewSync:_", credentialData);
+			console.log("NewSync:_", createSyncData);
 			message.success("Sync created successfully!");
 			router.push(`/spaces/${workspaceId}/syncs`);
 		}
-	}, [credentialData]);
+	}, [createSyncData]);
 
 	useEffect(() => {
-		if (addCredentialsError) {
+		if (isCreateSyncError) {
 			console.log(
 				"New sync:_ Error",
-				credentialError.data.detail?.[0].msg
+				createSyncError.data.detail?.[0].msg
 			);
 
 			notification.error({
-				message: credentialError.data.detail?.[0].msg,
-				description: credentialError.data.detail?.[0].msg,
+				message: createSyncError.data.detail?.[0].msg,
+				description: createSyncError.data.detail?.[0].msg,
 			});
 		}
-	}, [addCredentialsError]);
+	}, [isCreateSyncError]);
 
 	useEffect(() => {
 		if (isError) {
@@ -133,20 +141,21 @@ const NewSync = (props) => {
 		setCurrent(current - 1);
 	};
 
-	const createSync = () => {
+	const setCreateSyncPayload = () => {
+		console.log("Set Create sync payload:_");
+
 		const payload = {
 			src: updatedSourceMeta,
 			dest: updatedDestMeta,
 			schedule: {
-				run_interval: syncInterval * 60 * 1000,
+				run_interval: syncInterval * 60 * 1000, // inteval in milliseconds.
 			},
-			syncName: syncTitle === "" ? "Sync" : syncTitle,
+			syncName: getRandomWord("Source"),
 			workspaceId: workspaceId,
 		};
-		//console.log("payload:-", payload);
-		addCredentials(payload);
+		console.log("Create sync payload:_", payload);
+		createSync(payload);
 	};
-
 	const setConnectorCatalog = (catalog, config) => {
 		const {
 			id,
@@ -176,6 +185,7 @@ const NewSync = (props) => {
 		destinationSyncMode,
 		primaryKey
 	) => {
+		console.log("primary key:_", primaryKey);
 		if (warehouseSyncMode && destinationSyncMode && primaryKey) {
 			setMappingModes({
 				warehouseSyncMode,
@@ -192,30 +202,36 @@ const NewSync = (props) => {
 			name: sourceName,
 			catalog: { json_schema, name, supported_sync_modes },
 		} = sourceConnectorMeta;
-		let updatedSourceProperties = {};
+		let sourceProperties = {};
 		let mappingProperties = {};
 		for (let i = 0; i < destinationFields.length; i++) {
 			const type = { type: destinationFields[i].type };
-			updatedSourceProperties[destinationFields[i].name] = type;
+			sourceProperties[destinationFields[i].name] = type;
 			mappingProperties[destinationFields[i].name] =
 				destinationFields[i].destField;
 		}
-
 		const { destinationSyncMode, warehouseSyncMode, primaryKey } =
 			mappingModes;
+
+		const hasIdKey = sourceProperties.hasOwnProperty(primaryKey.name);
+		if (!hasIdKey) {
+			sourceProperties[primaryKey.name] = {
+				type: primaryKey.type,
+			};
+		}
 		const sourcePayload = {
 			catalog: {
 				streams: [
 					{
 						sync_mode: warehouseSyncMode,
 						destination_sync_mode: destinationSyncMode,
-						id_key: primaryKey,
+						id_key: primaryKey.name,
 						stream: {
 							name,
 							supported_sync_modes,
 							json_schema: {
 								$schema: json_schema.$schema,
-								properties: updatedSourceProperties,
+								properties: sourceProperties,
 							},
 						},
 					},
@@ -322,6 +338,179 @@ const NewSync = (props) => {
 	}
 
 	return (
+		<PageLayout
+			displayHeader={false}
+			containerStyles={{
+				width: "80%",
+				height: "100%",
+			}}
+		>
+			{/* <CardCpn containerStyles={{ padding: 10 }}>
+				<StepCpn
+					steps={steps}
+					current={current}
+					contentStyle={contentStyle}
+				>
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "flex-end",
+							marginTop: 20,
+						}}
+					>
+						{current > 0 && (
+							<CustomButton
+								title={"prev"}
+								onClick={prev}
+								size="large"
+								disabled={false}
+								style={{
+									marginRight: 20,
+								}}
+							/>
+						)}
+						{current < steps.length - 1 && (
+							<CustomButton
+								title={buttons.NEXT_BUTTON}
+								onClick={next}
+								size="large"
+								disabled={isNextButtonDisabled}
+							/>
+						)}
+
+						{current === steps.length - 1 && (
+							<CustomButton
+								title={buttons.CREATE_BUTTON}
+								loading={isCreateSyncLoading}
+								onClick={setCreateSyncPayload}
+								size="large"
+								disabled={isNextButtonDisabled}
+							/>
+						)}
+					</div>
+				</StepCpn>
+			</CardCpn> */}
+			<StepCpn
+				steps={steps}
+				current={current}
+				contentStyle={contentStyle}
+				headerTitle={"Back to syncs"}
+				handleOnClick={() => {
+					router.back();
+				}}
+			>
+				<div
+					style={{
+						display: "flex",
+						justifyContent: "flex-end",
+						marginTop: 20,
+					}}
+				>
+					{current > 0 && (
+						<CustomButton
+							title={"prev"}
+							onClick={prev}
+							size="large"
+							disabled={false}
+							style={{
+								marginRight: 20,
+							}}
+						/>
+					)}
+					{current < steps.length - 1 && (
+						<CustomButton
+							title={buttons.NEXT_BUTTON}
+							onClick={next}
+							size="large"
+							disabled={isNextButtonDisabled}
+						/>
+					)}
+
+					{current === steps.length - 1 && (
+						<CustomButton
+							title={buttons.CREATE_BUTTON}
+							loading={isCreateSyncLoading}
+							onClick={setCreateSyncPayload}
+							size="large"
+							disabled={isNextButtonDisabled}
+						/>
+					)}
+				</div>
+			</StepCpn>
+		</PageLayout>
+	);
+
+	return (
+		<PageLayout
+			displayHeader={false}
+			containerStyles={{
+				alignItems: "center",
+				backgroundColor: "red",
+				width: "70%",
+			}}
+		>
+			{/* <Title
+				title={syncTitle}
+				editable={{
+					onChange: setSyncTitle,
+				}}
+				level={4}
+			/> */}
+			<CardCpn
+				containerStyles={{
+					backgroundColor: "cyan",
+					width: "100%",
+				}}
+			>
+				{/* <StepCpn
+					steps={steps}
+					current={current}
+					contentStyle={contentStyle}
+				>
+					<div
+						style={{
+							//backgroundColor: "orange",
+							display: "flex",
+							justifyContent: "flex-end",
+							marginTop: 20,
+						}}
+					>
+						{current > 0 && (
+							<CustomButton
+								title={"prev"}
+								onClick={prev}
+								size="large"
+								disabled={false}
+								style={{
+									marginRight: 20,
+								}}
+							/>
+						)}
+						{current < steps.length - 1 && (
+							<CustomButton
+								title={buttons.NEXT_BUTTON}
+								onClick={next}
+								size="large"
+								disabled={isNextButtonDisabled}
+							/>
+						)}
+
+						{current === steps.length - 1 && (
+							<CustomButton
+								title={buttons.CREATE_BUTTON}
+								loading={isCreateSyncLoading}
+								onClick={setCreateSyncPayload}
+								size="large"
+								disabled={isNextButtonDisabled}
+							/>
+						)}
+					</div>
+				</StepCpn> */}
+			</CardCpn>
+		</PageLayout>
+	);
+
+	return (
 		<>
 			<Title
 				title={syncTitle}
@@ -343,6 +532,17 @@ const NewSync = (props) => {
 						marginTop: 20,
 					}}
 				>
+					{current > 0 && (
+						<CustomButton
+							title={"prev"}
+							onClick={prev}
+							size="large"
+							disabled={false}
+							style={{
+								marginRight: 20,
+							}}
+						/>
+					)}
 					{current < steps.length - 1 && (
 						<CustomButton
 							title={buttons.NEXT_BUTTON}
@@ -351,24 +551,14 @@ const NewSync = (props) => {
 							disabled={isNextButtonDisabled}
 						/>
 					)}
+
 					{current === steps.length - 1 && (
 						<CustomButton
 							title={buttons.CREATE_BUTTON}
-							loading={addCredentialLoading}
-							onClick={createSync}
+							loading={isCreateSyncLoading}
+							onClick={setCreateSyncPayload}
 							size="large"
 							disabled={isNextButtonDisabled}
-						/>
-					)}
-					{current > 0 && (
-						<CustomButton
-							title={"prev"}
-							onClick={prev}
-							size="large"
-							disabled={false}
-							style={{
-								marginLeft: 20,
-							}}
 						/>
 					)}
 				</div>

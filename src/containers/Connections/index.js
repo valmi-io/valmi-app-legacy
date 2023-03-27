@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
+import { AntDesignOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
@@ -66,11 +73,11 @@ const Connection = (props) => {
 
 	const connectionColumns = [
 		{
-			title: "NAME",
+			title: "Name",
 			dataIndex: "name",
 		},
 		{
-			title: "CONNECTOR",
+			title: "Connector",
 			dataIndex: "type",
 			render: (type) => {
 				return (
@@ -99,14 +106,11 @@ const Connection = (props) => {
 	}, []);
 
 	const navigateToDetails = (record) => {
-		console.log("navigating to details:-", record);
-		// router.push(
-		// 	`/spaces/55c39a0b-037d-406c-a1ac-00393b055f18/syncs/${record.id}/status`
-		// );
+		//console.log("navigating to details:-", record);
 	};
 
 	const onChange = (pagination, filters, sorter, extra) => {
-		console.log("params", pagination, filters, sorter, extra);
+		//console.log("params", pagination, filters, sorter, extra);
 	};
 
 	const displayTableCpn = (loading, data, onChange, onClick) => {
@@ -127,12 +131,14 @@ const Connection = (props) => {
 				title={title}
 				btnTitle={btnTitle}
 				onClick={() => onClick(type)}
+				icon={<AntDesignOutlined />}
 			/>
 		);
 	};
 
 	return (
 		<PageLayout
+			displayHeader={true}
 			headerTitle={
 				sourceConnections.length > 0
 					? appConstants.WAREHOUSES_TITLE
@@ -155,6 +161,7 @@ const Connection = (props) => {
 						navigateToDetails
 					)}
 					<PageLayout
+						layoutStyles={"pl-0 pr-0"}
 						headerTitle={appConstants.DESTINATIONS_TITLE}
 						buttonTitle={
 							destinatonConnections.length > 0

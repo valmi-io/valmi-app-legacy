@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import ConnectorCpn from "src/components/ConnectionCpn/Connector";
@@ -7,8 +13,11 @@ import StepCpn from "src/components/Step";
 import appConstants from "src/constants/app";
 import CustomButton from "src/components/Button/Button";
 import buttons from "src/constants/buttons";
+import { useRouter } from "next/router";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const NewConnection = (props) => {
+	const router = useRouter();
 	const formRef = useRef(null);
 	const [currSrcStep, setCurrSrcStep] = useState(0);
 	const [connectorMeta, setConnectorMeta] = useState(null);
@@ -47,10 +56,10 @@ const NewConnection = (props) => {
 	);
 
 	const contentStyle = {
-		textAlign: "center",
-		borderRadius: 10,
-		//border: `1px dashed ${"bl"}`,
-		marginTop: 16,
+		// textAlign: "center",
+		// borderRadius: 10,
+		// //border: `1px dashed ${"bl"}`,
+		// marginTop: 16,
 	};
 
 	const steps = [
@@ -84,19 +93,23 @@ const NewConnection = (props) => {
 	];
 
 	return (
-		<PageLayout displayHeader={false}>
+		<PageLayout
+			displayHeader={false}
+			containerStyles={{
+				width: "70%",
+				height: "100%",
+			}}
+		>
 			<StepCpn
 				steps={steps}
 				current={currSrcStep}
 				contentStyle={contentStyle}
+				headerTitle={"Back to connections"}
+				handleOnClick={() => {
+					router.back();
+				}}
 			>
-				<div
-					style={{
-						display: "flex",
-						justifyContent: "flex-end",
-						marginTop: 20,
-					}}
-				>
+				<div className="mt-5 ml-2">
 					{currSrcStep < steps.length - 1 && (
 						<CustomButton
 							title={buttons.NEXT_BUTTON}

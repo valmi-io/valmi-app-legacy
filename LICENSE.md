@@ -31,6 +31,7 @@ If you use the software in violation of these terms, such use is not licensed, a
 As far as the law allows, the software comes as is, without any warranty or condition, and the licensor will not be liable to you for any damages arising out of these terms or the use or nature of the software, under any kind of legal claim.
 
 **Definitions**
+<<<<<<< HEAD
 The *licensor* is the entity offering these terms, and the *software* is the software the licensor makes available under these terms, including any portion of it.
 
 *you* refers to the individual or entity agreeing to these terms.
@@ -42,3 +43,16 @@ The *licensor* is the entity offering these terms, and the *software* is the sof
 *use* means anything you do with the software requiring one of your licenses.
 
 *trademark* means trademarks, service marks, and similar rights.
+=======
+The _licensor_ is the entity offering these terms, and the _software_ is the software the licensor makes available under these terms, including any portion of it.
+
+_you_ refers to the individual or entity agreeing to these terms.
+
+_your company_ is any legal entity, sole proprietorship, or other kind of organization that you work for, plus all organizations that have control over, are under the control of, or are under common control with that organization. _control_ means ownership of substantially all the assets of an entity, or the power to direct its management and policies by vote, contract, or otherwise. Control can be direct or indirect.
+
+_your licenses_ are all the licenses granted to you for the software under these terms.
+
+_use_ means anything you do with the software requiring one of your licenses.
+
+_trademark_ means trademarks, service marks, and similar rights.
+>>>>>>> ea0010f (added sync runs)

@@ -1,12 +1,18 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 const appConstants = {
-	NO_SYNCS: "No syncs in this workspace",
+	NO_SYNCS: "No syncs found in this workspace",
 	NO_CONNECTIONS: "No connections in this workspace",
 	EMPTY_DEST_CONNECTIONS: "No destinations in this workspace",
 	WAREHOUSES_TITLE: "Warehouses",
 	DESTINATIONS_TITLE: "Destinations",
-	SET_SRC_CONNECTOR: "Setup Warehouse",
+	SET_SRC_CONNECTOR: "Select warehouse",
 	SELECT_SRC_CONNECTOR: "Configure warehouse",
-	CONNECT_SRC_CONNECTOR: "Connect Warehouse",
+	CONNECT_SRC_CONNECTOR: "Connect warehouse",
 	SELECT_DEST_CONNECTOR: "Configure destination",
 	SET_DEST_CONNECTOR: "Setup Destination",
 	CONNECT_DEST_CONNECTOR: "Connect Destination",
@@ -21,10 +27,11 @@ const appConstants = {
 	SCHEDULE: "Schedule",
 	DEFAULT_EMAIL: "user@valmi.io",
 	HAS_ACCOUNT: "Already have an account? ",
-	HAS_NOT_ACCOUNT: "Don't have an account? ",
-	EMAIL_SENT_HEADER: "Email Sent",
-	EMAIL_SENT_DESC_HEADER: "Click the link sent to",
-	TO_CONTINUE_TEXT: " to continue.",
+	HAS_NO_ACCOUNT: "Don't have an account? ",
+	EMAIL_SENT_HEADER: "Email Sent!",
+	EMAIL_SENT_DESC_HEADER: "We have sent a confirmation email to ",
+	VERIFY_EMAIL_TEXT:
+		"Check your email and click on the confirmation link to continue.",
 	PRIVACY_POLICY_TEXT:
 		"By using valmi, you agree to our privacy policy and terms of service.",
 	ACCOUNT_ACTIVATION_HEADER: "Activate Account",

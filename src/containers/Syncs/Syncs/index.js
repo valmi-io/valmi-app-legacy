@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
@@ -16,6 +22,10 @@ import {
 } from "src/store/api/apiSlice";
 import { capitalizeFirstLetter, getConnectorSrc } from "src/utils/lib";
 import TableCpn from "src/components/Table";
+import ErrorCpn from "src/components/ErrorCpn";
+import errors from "src/constants/errors";
+import Loading from "src/components/Loading";
+import { DashboardOutlined } from "@ant-design/icons";
 
 const Syncs = (props) => {
 	const user = useSelector((state) => state.user);
@@ -47,7 +57,8 @@ const Syncs = (props) => {
 
 	useEffect(() => {
 		if (isError) {
-			console.log("Syncs error:-", error.data);
+			console.log("error:_", error);
+			ErrorCpn(error, errors.ERROR_401);
 		}
 	}, [isError]);
 
@@ -75,7 +86,7 @@ const Syncs = (props) => {
 
 	const syncColumns = [
 		{
-			title: "NAME",
+			title: "Sync",
 			dataIndex: "name",
 			render: (name) => {
 				return (
@@ -86,7 +97,7 @@ const Syncs = (props) => {
 			},
 		},
 		{
-			title: "WAREHOUSE NAME",
+			title: "Warehouse",
 			dataIndex: "source",
 			render: (source) => {
 				const type = source.credential.connector_type.split("_")[1];
@@ -107,7 +118,7 @@ const Syncs = (props) => {
 			},
 		},
 		{
-			title: "DESTINATION NAME",
+			title: "Destination",
 			dataIndex: "destination",
 			render: (destination) => {
 				const type =
@@ -129,22 +140,26 @@ const Syncs = (props) => {
 			},
 		},
 		{
-			title: "SCHEDULE",
+			title: "Schedule",
 			dataIndex: "schedule",
 			render: (schedule) => {
 				let interval = 0;
 				if (schedule.run_interval) {
-					interval = schedule.run_interval / 60000;
+					interval = Math.ceil(schedule.run_interval / 60000);
+				}
+				let sufix = "minutes";
+				if (interval < 2) {
+					sufix = "minute";
 				}
 				return (
 					<>
-						<span>{interval}</span>
+						<span>{`Every ${interval} ${sufix}`}</span>
 					</>
 				);
 			},
 		},
 		{
-			title: "ENABLED",
+			title: "Enabled",
 			dataIndex: "status",
 			render: (status, data) => {
 				const isEnabled = status === "active";
@@ -166,11 +181,8 @@ const Syncs = (props) => {
 		//console.log("params", pagination, filters, sorter, extra);
 	};
 
-	const navigateToSyncDetails = (record) => {
-		console.log("navigating to details:-", record);
-		router.push(
-			`/spaces/55c39a0b-037d-406c-a1ac-00393b055f18/syncs/${record.id}/status`
-		);
+	const navigateToSyncRuns = (record) => {
+		router.push(`/spaces/${workspaceId}/syncs/${record.id}/runs`);
 	};
 
 	return (
@@ -180,20 +192,23 @@ const Syncs = (props) => {
 			displayCreateBtn={syncs.length > 0}
 			onClick={navigate}
 		>
-			{syncs.length > 0 && (
+			{isLoading && <Loading loading={true} />}
+			{!isLoading && syncs.length > 0 && (
 				<TableCpn
 					loading={isLoading || updateSyncLoading}
 					columns={syncColumns}
 					data={syncs}
 					onChange={onChange}
-					onClick={navigateToSyncDetails}
+					onClick={navigateToSyncRuns}
+					pageSize={10}
 				/>
 			)}
-			{syncs.length < 1 && (
+			{!isLoading && syncs.length < 1 && (
 				<EmptyCpn
 					title={appConstants.NO_SYNCS}
 					btnTitle={buttons.NEW_SYNC_BUTTON}
 					onClick={navigate}
+					icon={<DashboardOutlined />}
 				/>
 			)}
 		</PageLayout>

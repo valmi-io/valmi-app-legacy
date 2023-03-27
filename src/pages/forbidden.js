@@ -1,15 +1,11 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import React from "react";
-// import PropTypes from 'prop-types';
-
 import Head from "next/head";
-
-const propTypes = {
-	// classes: PropTypes.object.isRequired,
-};
-
-const defaultProps = {
-	// classes: {},
-};
 
 const ForbiddenPage = (props) => {
 	return (
@@ -71,10 +67,6 @@ const ForbiddenPage = (props) => {
 		</>
 	);
 };
-
-ForbiddenPage.propTypes = propTypes;
-
-ForbiddenPage.defaultProps = defaultProps;
 
 ForbiddenPage.Layout = ({ children }) => children;
 

@@ -1,14 +1,21 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import { createApi, fetchBaseQuery, retry } from "@reduxjs/toolkit/query/react";
 import CONSTANTS from "src/constants/urls";
 import AuthStorage from "src/utils/auth-storage";
 
-const { API_URL, SPACES_URL, LOGIN_URL, LOGOUT_URL } = CONSTANTS;
+const { API_URL } = CONSTANTS;
 
 const staggeredBaseQueryWithBailOut = retry(
 	async (args, api, extraOptions) => {
 		const result = await fetchBaseQuery({
 			baseUrl: API_URL,
-			timeout: 10000, // 10 seconds
+			//timeout: 10000, // 10 seconds,
+			signal: new AbortController().signal,
 			prepareHeaders: async (headers, { getState }) => {
 				//console.log("auth storage.token:_", AuthStorage.token);
 				const token = (await AuthStorage.token) || "";
@@ -25,7 +32,14 @@ const staggeredBaseQueryWithBailOut = retry(
 
 		// bail out of re-tries immediately if unauthorized,
 		// because we know successive re-retries would be redundant
-		if (result.error?.status === 401) {
+		// console.log("===================================");
+		// console.log("result:-------------------------", result);
+		if (
+			result.error?.status === 401
+			//||
+			// result.error?.status === "FETCH_FAILED" ||
+			// result.error?.status === "FETCH_ERROR"
+		) {
 			retry.fail(result.error);
 		}
 
@@ -42,16 +56,14 @@ export const apiSlice = createApi({
 	// All of our requests will have URLs starting with '/api/v1'
 	baseQuery: staggeredBaseQueryWithBailOut,
 	// The "endpoints" represent operations and requests for this server
+
 	endpoints: (builder) => ({
-		// The `getSpaces` endpoint is a "query" operation that returns data
 		fetchWorkSpaces: builder.query({
-			// The URL for the request is '/api/v1/spaces'
 			query: () => ({
-				url: SPACES_URL,
+				url: `/spaces/`,
 			}),
 		}),
 		signupUser: builder.query({
-			// The URL for the request is '/api/v1/users/'
 			query: (arg) => {
 				console.log("arg:_", arg);
 				return {
@@ -62,9 +74,7 @@ export const apiSlice = createApi({
 			},
 		}),
 		activateUser: builder.query({
-			// The URL for the request is '/api/v1/users/activation/'
 			query: (arg) => {
-				console.log("arg:_", arg);
 				return {
 					url: "/users/activation/",
 					method: "POST",
@@ -75,7 +85,7 @@ export const apiSlice = createApi({
 		loginAndFetchWorkSpaces: builder.query({
 			async queryFn(arg, queryApi, extraOptions, baseQuery) {
 				const user = await baseQuery({
-					url: LOGIN_URL,
+					url: `/token/login`,
 					method: "POST",
 					body: arg,
 				});
@@ -84,17 +94,16 @@ export const apiSlice = createApi({
 				AuthStorage.value = {
 					token: token,
 				};
-				const result = await baseQuery(SPACES_URL);
+				const result = await baseQuery(`/spaces/`);
 				return result.data
 					? { data: result.data }
 					: { error: result.error };
 			},
 		}),
 		logoutUser: builder.query({
-			// The URL for the request is '/api/v1//token/logout'
 			query: () => {
 				return {
-					url: LOGOUT_URL,
+					url: `/token/logout`,
 					method: "POST",
 					body: {},
 				};
@@ -109,7 +118,6 @@ export const apiSlice = createApi({
 			},
 		}),
 		fetchConnectors: builder.query({
-			// The URL for the request is '/api/v1/connectors'
 			query: () => {
 				return {
 					url: `/connectors/`,
@@ -118,58 +126,37 @@ export const apiSlice = createApi({
 		}),
 		checkAndAddConnectorSpec: builder.query({
 			async queryFn(arg, queryApi, extraOptions, baseQuery) {
-				console.log("=============================");
-				console.log("Check and add connector spec is called:-", arg);
 				const { type, workspaceId, config, name } = arg;
 				const spec = await baseQuery({
 					url: `/workspaces/${workspaceId}/connectors/${type}/check`,
 					method: "POST",
 					body: config,
 				});
-				console.log("checkAndAddConnectorSpec response:-", spec);
 				if (spec.error) return { error: spec.error };
 				if (spec.data) {
-					console.log("Spec data:-", spec.data);
 					const {
 						connectionStatus: { status, message },
 					} = spec.data;
 					if (status === "FAILED") return { error: message };
 				}
-				console.log("====================================");
-				console.log(
-					"Add Credentials to this work space id:_",
-					workspaceId
-				);
 				const payload = {
 					connector_type: type,
 					connector_config: config.config,
-					// name: type.split("_")[1],
 					name,
 				};
-				console.log("payload_", payload);
 				const result = await baseQuery({
 					url: `/workspaces/${workspaceId}/credentials/create`,
 					method: "POST",
 					body: payload,
 				});
-				console.log("result of adding credentials:-", result);
 				return result.data
 					? { data: result.data }
 					: { error: result.error };
 			},
 		}),
 		discoverConnector: builder.query({
-			// The URL for the request is '/api/v1/connectors'
 			query: (arg) => {
 				const { config, workspaceId, connectorType } = arg;
-				console.log("Arg:_", arg);
-				console.log("=========================");
-				console.log("discover connector:_ config", config);
-				console.log("discover connector:- workspaceID", workspaceId);
-				console.log(
-					"discover connector:_ connectortype:_",
-					connectorType
-				);
 				return {
 					url: `/workspaces/${workspaceId}/connectors/${connectorType}/discover`,
 					method: "POST",
@@ -180,7 +167,6 @@ export const apiSlice = createApi({
 			},
 		}),
 		fetchCredentials: builder.query({
-			// The URL for the request is '/api/v1/connectors'
 			query: (arg) => {
 				const { workspaceId } = arg;
 				return {
@@ -190,29 +176,21 @@ export const apiSlice = createApi({
 		}),
 		addCredentials: builder.query({
 			async queryFn(arg, queryApi, extraOptions, baseQuery) {
-				console.log("=============================");
-				console.log("add credentials-", arg);
 				const { src, dest, schedule, syncName, workspaceId } = arg;
-				console.log("Src:_", src);
 
 				const sourceRes = await baseQuery({
 					url: `/workspaces/${workspaceId}/sources/create`,
 					method: "POST",
 					body: src,
 				});
-				console.log("source Res", sourceRes);
 				if (sourceRes.error) return { error: sourceRes.error };
-				console.log("--------------------------");
-				console.log("Source created:_", sourceRes.data);
 				const { id: sourceId } = sourceRes.data;
 				const destRes = await baseQuery({
 					url: `/workspaces/${workspaceId}/destinations/create`,
 					method: "POST",
 					body: dest,
 				});
-				console.log("Dest res:_", destRes);
 				if (destRes.error) return { error: destRes.error };
-				console.log("Destination created:_", destRes.data);
 				const { id: destinationId } = destRes.data;
 				const syncPayload = {
 					name: syncName,
@@ -231,11 +209,30 @@ export const apiSlice = createApi({
 			},
 		}),
 		fetchSyncs: builder.query({
-			// The URL for the request is '/api/v1/connectors'
 			query: (arg) => {
 				const { workspaceId } = arg;
 				return {
 					url: `/workspaces/${workspaceId}/syncs/`,
+				};
+			},
+		}),
+		getSyncById: builder.query({
+			query: (arg) => {
+				const { workspaceId, syncId } = arg;
+				return {
+					url: `/workspaces/${workspaceId}/syncs/${syncId}`,
+				};
+			},
+		}),
+		getSyncRunsById: builder.query({
+			query: (arg) => {
+				console.log("===============================");
+				console.log("get sync runs by id is called:_");
+				const { workspaceId, syncId, before, limit } = arg;
+				const date = before.replace(/"/g, "");
+				console.log("Arg:_", arg);
+				return {
+					url: `/workspaces/${workspaceId}/syncs/${syncId}/runs/?before=${date}&limit=${limit}`,
 				};
 			},
 		}),
@@ -272,4 +269,6 @@ export const {
 	useLazyAddCredentialsQuery,
 	useFetchSyncsQuery,
 	useLazyToggleSyncQuery,
+	useLazyGetSyncByIdQuery,
+	useLazyGetSyncRunsByIdQuery,
 } = apiSlice;

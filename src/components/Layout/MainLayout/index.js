@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2023 valmi.io <https://github.com/valmi-io>
+ * Created Date: Monday, March 20th 2023, 9:48:25 pm
+ * Author: Nagendra S @ valmi.io
+ */
+
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
@@ -144,14 +150,10 @@ const MainLayout = (props) => {
 							onClick={() => setMobiShow(false)}
 						/>
 					)}
-					<Content
-						style={{
-							margin: 20,
-						}}
-					>
-						<div>{children}</div>
+					<Content style={{ display: "flex" }} className="mt-3">
+						{children}
 					</Content>
-					<Footer />
+					{/* <Footer /> */}
 				</Layout>
 			</Layout>
 			<BackTop />
