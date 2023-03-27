@@ -332,7 +332,7 @@ const NewSync = (props) => {
 				<div className="d-flex mt-3 justify-content-end">
 					{current > 0 && (
 						<CustomButton
-							title={"prev"}
+							title={"Back"}
 							onClick={prev}
 							size="small"
 							type="text"

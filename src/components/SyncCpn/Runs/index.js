@@ -29,6 +29,7 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 	const [loadMoreButton, showLoadMoreButton] = useState(false);
 	const [lastSync, setLastSync] = useState(new Date().toISOString());
 	const [fetchMore, setFetchMore] = useState(true);
+	const [loadMore, setLoadMore] = useState(false);
 	const [isRefetching, setIsRefetching] = useState(false);
 
 	const [getSyncRuns, { data, isLoading, isError, error }] =
@@ -74,13 +75,19 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 
 	useEffect(() => {
 		if (data) {
-			console.log("runs data:_", data);
-			if (isRefetching) {
-				setRunsData(data);
-			} else {
+			if (loadMore) {
 				setRunsData((prevData) => [...prevData, ...data]);
 				showLoadMoreButton(false);
 				setFetchMore(false);
+				setLoadMore(false);
+			} else {
+				if (isRefetching) {
+					setRunsData(data);
+				} else {
+					setRunsData((prevData) => [...prevData, ...data]);
+					showLoadMoreButton(false);
+					setFetchMore(false);
+				}
 			}
 		}
 	}, [data]);
@@ -88,11 +95,13 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 	useEffect(() => {
 		if (isError) {
 			setFetchMore(false);
+			setLoadMore(false);
 			ErrorCpn(error, errors.ERROR_401);
 		}
 	}, [isError]);
 
 	const handleLoadMore = () => {
+		setLoadMore(true);
 		const lastSyncRun = runsData[runsData.length - 1].run_at;
 		setLastSync(lastSyncRun);
 		setFetchMore(true);
@@ -209,7 +218,6 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 
 	const renderSyncRuns = (data) => {
 		const date = convertUTCDateToLocalDate(new Date(data.run_at));
-
 		let srcStatus = "";
 		let destStatus = "";
 		let runStatus = "";
@@ -271,9 +279,9 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 		return (
 			<Card.Grid
 				hoverable={false}
-				style={{
-					boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-				}}
+				// style={{
+				// 	boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+				// }}
 				className="bg-white d-flex w-100 cursor-pointer"
 			>
 				<div className="d-flex w-80">
@@ -303,7 +311,6 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 					)}
 				</div>
 				<div className="d-flex w-30 ml-4 align-items-center">
-					{/* <span>Run at</span> */}
 					<span>
 						{date.toDateString() +
 							" " +
@@ -380,9 +387,9 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 				dataSource={runsData}
 				renderItem={renderSyncRuns}
 				loading={isLoading}
-				bordered
 				style={{
-					borderRadius: 5,
+					borderRadius: "10px",
+					overflow: "hidden",
 				}}
 			/>
 			{loadMoreButton && (

@@ -252,7 +252,7 @@ const SpecCpn = (props) => {
 						})}
 						<Form.Item className="d-flex mt-3 justify-content-end">
 							<CustomButton
-								title={"prev"}
+								title={"Back"}
 								onClick={prev}
 								size="small"
 								type="text"

@@ -105,7 +105,7 @@ const NewConnection = (props) => {
 						<CustomButton
 							title={buttons.NEXT_BUTTON}
 							onClick={next}
-							size="large"
+							size="small"
 							disabled={isNextButtonDisabled}
 						/>
 					</div>

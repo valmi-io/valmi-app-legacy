@@ -33,7 +33,11 @@ const ConnectorCpn = (props) => {
 	}, [isError]);
 
 	if (isLoading) {
-		return <Spin tip="Please wait..." />;
+		return (
+			<div className="d-flex justify-content-center">
+				<Spin tip="Please wait..." />;
+			</div>
+		);
 	}
 
 	return (
@@ -69,24 +73,18 @@ const ConnectorCpn = (props) => {
 										}
 									}}
 									style={{
-										width: "100%",
 										padding: 20,
-										backgroundColor:
-											selectedConnector === connector.type
-												? "#19bc9b"
-												: "white",
 										cursor: "pointer",
-										display: "flex",
-										justifyContent: "flex-start",
-										alignItems: "center",
-										color:
-											selectedConnector ===
-												connector.type && "white",
 										borderRadius:
 											selectedConnector === connector.type
 												? 15
 												: 10,
 									}}
+									className={`${
+										selectedConnector === connector.type
+											? "bg-primary color-white"
+											: "bg-white"
+									} "d-flex w-100 align-items-center justify-content-start"`}
 								>
 									<Image
 										src={`/connectors/${type.toLowerCase()}.svg`}
