@@ -19,7 +19,7 @@ const buttons = {
 	SIGNUP_BUTTON: "Sign up",
 	LOGOUT_BUTTON: "Logout",
 	RESET_BUTTON: "Reset",
-	NEXT_BUTTON: "Next Step",
+	NEXT_BUTTON: "Continue",
 	ACTIVATE_LOGIN_BUTTON: "CLICK TO LOGIN",
 	ACTIVATE_SIGNUP_BUTTON: "CLICK TO SIGNUP",
 	PREV_BUTTON: "Previous",

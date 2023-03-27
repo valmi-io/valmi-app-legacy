@@ -7,7 +7,7 @@
 import { useEffect, useState } from "react";
 import DropdownCpn from "src/components/Dropdown";
 import { useLazyDiscoverConnectorQuery } from "src/store/api/apiSlice";
-import { capitalizeFirstLetter, connectorTypes } from "src/utils/lib";
+import { connectorTypes } from "src/utils/lib";
 
 const ConnectionCpn = ({
 	connections,
@@ -134,7 +134,7 @@ const ConnectionCpn = ({
 	const displayDropdown = (type, onItemSelected, connections, loading) => {
 		return (
 			<div key={type} className="text-left">
-				<span>{capitalizeFirstLetter(type)}</span>
+				<span>{type}</span>
 				<DropdownCpn
 					onItemSelected={onItemSelected}
 					connections={connections}

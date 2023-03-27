@@ -250,23 +250,25 @@ const SpecCpn = (props) => {
 						{connectorSpec.map((spec) => {
 							return getInputCpn(spec);
 						})}
-						<Form.Item className="d-flex mt-5 justify-content-end">
+						<Form.Item className="d-flex mt-3 justify-content-end">
 							<CustomButton
 								title={"prev"}
 								onClick={prev}
-								size="large"
+								size="small"
 								type="text"
 								disabled={checking}
-								style={{
-									color: checking ? "grey" : "green",
-								}}
+								className={`mr-3 ${
+									checking
+										? "color-disabled"
+										: "color-primary"
+								}`}
 							/>
 							<CustomButton
 								loading={checking}
 								disabled={checking}
 								htmlType="submit"
 								title={buttons.CREATE_CONNECTION_BUTTON}
-								size="large"
+								size="small"
 								style={{
 									marginLeft: 20,
 								}}

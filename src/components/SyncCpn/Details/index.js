@@ -5,21 +5,18 @@
  */
 
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { Skeleton, Space } from "antd";
+import { Skeleton, Space, Switch } from "antd";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CardCpn from "src/components/Card";
 import ErrorCpn from "src/components/ErrorCpn";
 import Title from "src/components/Title";
 import errors from "src/constants/errors";
 import { useLazyGetSyncByIdQuery } from "src/store/api/apiSlice";
-import {
-	capitalizeFirstLetter,
-	connectorTypes,
-	getConnectorSrc,
-} from "src/utils/lib";
+import { connectorTypes, getConnectorSrc } from "src/utils/lib";
 
 const SyncDetails = ({ syncID, workspaceID }) => {
+	const [toggleChecked, setToggleChecked] = useState(true);
 	const [getSyncDetails, { data, isLoading, isError, error }] =
 		useLazyGetSyncByIdQuery();
 
@@ -49,7 +46,7 @@ const SyncDetails = ({ syncID, workspaceID }) => {
 		}
 	}, [isLoading]);
 
-	const getConnectorImage = ({ type, size = 60 }) => {
+	const getConnectorImage = ({ type, size = 30 }) => {
 		return (
 			<Image
 				src={getConnectorSrc(type.split("_")[1]).toLowerCase()}
@@ -61,6 +58,11 @@ const SyncDetails = ({ syncID, workspaceID }) => {
 				}}
 			/>
 		);
+	};
+
+	const handleSwitchChange = (val, event, data) => {
+		event.stopPropagation();
+		setToggleChecked((checked) => !checked);
 	};
 
 	const displaySyncDetails = () => {
@@ -78,19 +80,20 @@ const SyncDetails = ({ syncID, workspaceID }) => {
 			},
 		} = destination;
 		return (
-			<div
-				style={{
-					flexDirection: "column",
-					display: "flex",
-					justifyContent: "center",
-					fontSize: 24,
-				}}
-			>
-				<Title
-					title={capitalizeFirstLetter(syncName)}
-					classnames={"font-weight-light"}
-					level={4}
-				/>
+			<div className="d-flex flex-column justify-content-center">
+				<div className="d-flex align-items-center justify-content-between ">
+					<Title
+						title={syncName}
+						classnames={"font-weight-light"}
+						level={4}
+					/>
+					<Switch
+						checked={toggleChecked}
+						onChange={(checked, event) =>
+							handleSwitchChange(checked, event)
+						}
+					/>
+				</div>
 				<div className="d-flex align-items-center mt-3">
 					<div className="d-flex align-items-center">
 						{getConnectorImage({
@@ -102,6 +105,7 @@ const SyncDetails = ({ syncID, workspaceID }) => {
 							level={5}
 						/>
 					</div>
+
 					<ArrowRightOutlined
 						style={{ fontSize: 18 }}
 						className="ml-3 mr-3"

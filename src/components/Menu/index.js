@@ -29,13 +29,10 @@ const defaultProps = {
 
 const MenuCpn = (props) => {
 	const { theme, onClick, items, defaultSelectedKeys, style } = props;
-
 	return (
 		<Menu
 			theme={theme}
-			defaultSelectedKeys={defaultSelectedKeys}
-			// selectedKeys={["/" + (sub && sub !== "[id]" ? sub : root)]}
-			//selectedKeys={["/" + root + "/" + sub + "/" + endpoint]}
+			selectedKeys={defaultSelectedKeys}
 			mode="inline"
 			items={items}
 			onClick={onClick}

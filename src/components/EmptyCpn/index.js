@@ -17,7 +17,13 @@ const EmptyCpn = (props) => {
 			icon={icon}
 			title={title}
 			extra={
-				<CustomButton title={btnTitle} onClick={onClick} size="large" />
+				<div className="d-flex justify-content-center">
+					<CustomButton
+						title={btnTitle}
+						onClick={onClick}
+						size="large"
+					/>
+				</div>
 			}
 		/>
 	);

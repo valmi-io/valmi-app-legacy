@@ -332,12 +332,13 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 
 					{runStatus === "failed" && (
 						<CustomButton
-							title="Show Error"
+							title="Show error"
+							size="small"
 							onClick={() => {
 								setRunErrorMsg(errorMsg);
 								setRunError(true);
 							}}
-							style={{ marginTop: 10, fontSize: 14 }}
+							className="mt-2"
 						/>
 					)}
 				</div>
@@ -360,7 +361,15 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 					}}
 				/>
 			)}
-			<Title title={"Run History"} level={4} classnames={"mb-3"} />
+			<div className="d-flex justify-content-between">
+				<Title title={"Run History"} level={4} classnames={"mb-3"} />
+				<CustomButton
+					title="Stop sync"
+					size="small"
+					loading={false}
+					onClick={() => {}}
+				/>
+			</div>
 			<List
 				pagination={{
 					position: "bottom",
@@ -371,13 +380,20 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 				dataSource={runsData}
 				renderItem={renderSyncRuns}
 				loading={isLoading}
+				bordered
+				style={{
+					borderRadius: 5,
+				}}
 			/>
 			{loadMoreButton && (
-				<CustomButton
-					title="Load more"
-					loading={isLoading}
-					onClick={handleLoadMore}
-				/>
+				<div className="d-flex justify-content-center">
+					<CustomButton
+						title="Load more"
+						size="small"
+						loading={isLoading}
+						onClick={handleLoadMore}
+					/>
+				</div>
 			)}
 		</>
 	);

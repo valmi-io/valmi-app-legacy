@@ -20,7 +20,6 @@ import buttons from "src/constants/buttons";
 import errors from "src/constants/errors";
 import routes from "src/constants/routes";
 import { useFetchCredentialsQuery } from "src/store/api/apiSlice";
-import { capitalizeFirstLetter } from "src/utils/lib";
 
 const Connection = (props) => {
 	const user = useSelector((state) => state.user);
@@ -79,11 +78,13 @@ const Connection = (props) => {
 	const connectionColumns = [
 		{
 			title: "Name",
+			width: "50%",
 			dataIndex: "name",
 		},
 		{
 			title: "Connector",
 			dataIndex: "type",
+			width: "50%",
 			render: (type) => {
 				return (
 					<>
@@ -96,7 +97,7 @@ const Connection = (props) => {
 								marginRight: 10,
 							}}
 						/>
-						{capitalizeFirstLetter(type.toLowerCase())}
+						{type.toLowerCase()}
 					</>
 				);
 			},

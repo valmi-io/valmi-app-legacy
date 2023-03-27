@@ -150,9 +150,7 @@ const MainLayout = (props) => {
 							onClick={() => setMobiShow(false)}
 						/>
 					)}
-					<Content style={{ display: "flex" }} className="mt-3">
-						{children}
-					</Content>
+					<Content className="mt-1 d-flex">{children}</Content>
 					{/* <Footer /> */}
 				</Layout>
 			</Layout>

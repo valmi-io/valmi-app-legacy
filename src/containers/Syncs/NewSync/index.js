@@ -334,18 +334,17 @@ const NewSync = (props) => {
 						<CustomButton
 							title={"prev"}
 							onClick={prev}
-							size="large"
+							size="small"
+							type="text"
 							disabled={false}
-							style={{
-								marginRight: 20,
-							}}
+							className={"mr-3 color-primary"}
 						/>
 					)}
 					{current < steps.length - 1 && (
 						<CustomButton
 							title={buttons.NEXT_BUTTON}
 							onClick={next}
-							size="large"
+							size="small"
 							disabled={isNextButtonDisabled}
 						/>
 					)}
@@ -355,139 +354,13 @@ const NewSync = (props) => {
 							title={buttons.CREATE_BUTTON}
 							loading={isCreateSyncLoading}
 							onClick={setCreateSyncPayload}
-							size="large"
+							size="small"
 							disabled={isNextButtonDisabled}
 						/>
 					)}
 				</div>
 			</StepCpn>
 		</PageLayout>
-	);
-
-	return (
-		<PageLayout
-			displayHeader={false}
-			containerStyles={{
-				alignItems: "center",
-				backgroundColor: "red",
-				width: "70%",
-			}}
-		>
-			{/* <Title
-				title={syncTitle}
-				editable={{
-					onChange: setSyncTitle,
-				}}
-				level={4}
-			/> */}
-			<CardCpn
-				containerStyles={{
-					backgroundColor: "cyan",
-					width: "100%",
-				}}
-			>
-				{/* <StepCpn
-					steps={steps}
-					current={current}
-					contentStyle={contentStyle}
-				>
-					<div
-						style={{
-							//backgroundColor: "orange",
-							display: "flex",
-							justifyContent: "flex-end",
-							marginTop: 20,
-						}}
-					>
-						{current > 0 && (
-							<CustomButton
-								title={"prev"}
-								onClick={prev}
-								size="large"
-								disabled={false}
-								style={{
-									marginRight: 20,
-								}}
-							/>
-						)}
-						{current < steps.length - 1 && (
-							<CustomButton
-								title={buttons.NEXT_BUTTON}
-								onClick={next}
-								size="large"
-								disabled={isNextButtonDisabled}
-							/>
-						)}
-
-						{current === steps.length - 1 && (
-							<CustomButton
-								title={buttons.CREATE_BUTTON}
-								loading={isCreateSyncLoading}
-								onClick={setCreateSyncPayload}
-								size="large"
-								disabled={isNextButtonDisabled}
-							/>
-						)}
-					</div>
-				</StepCpn> */}
-			</CardCpn>
-		</PageLayout>
-	);
-
-	return (
-		<>
-			<Title
-				title={syncTitle}
-				editable={{
-					onChange: setSyncTitle,
-				}}
-				level={4}
-			/>
-			<StepCpn
-				steps={steps}
-				current={current}
-				contentStyle={contentStyle}
-			>
-				<div
-					style={{
-						//backgroundColor: "orange",
-						display: "flex",
-						justifyContent: "flex-end",
-						marginTop: 20,
-					}}
-				>
-					{current > 0 && (
-						<CustomButton
-							title={"prev"}
-							onClick={prev}
-							size="large"
-							disabled={false}
-							style={{
-								marginRight: 20,
-							}}
-						/>
-					)}
-					{current < steps.length - 1 && (
-						<CustomButton
-							title={buttons.NEXT_BUTTON}
-							onClick={next}
-							size="large"
-							disabled={isNextButtonDisabled}
-						/>
-					)}
-
-					{current === steps.length - 1 && (
-						<CustomButton
-							title={buttons.CREATE_BUTTON}
-							loading={isCreateSyncLoading}
-							onClick={setCreateSyncPayload}
-							size="large"
-							disabled={isNextButtonDisabled}
-						/>
-					)}
-				</div>
-			</StepCpn>
-		</>
 	);
 };
 

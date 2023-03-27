@@ -20,12 +20,12 @@ import {
 	useFetchSyncsQuery,
 	useLazyToggleSyncQuery,
 } from "src/store/api/apiSlice";
-import { capitalizeFirstLetter, getConnectorSrc } from "src/utils/lib";
+import { getConnectorSrc } from "src/utils/lib";
 import TableCpn from "src/components/Table";
 import ErrorCpn from "src/components/ErrorCpn";
 import errors from "src/constants/errors";
 import Loading from "src/components/Loading";
-import { DashboardOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, DashboardOutlined } from "@ant-design/icons";
 
 const Syncs = (props) => {
 	const user = useSelector((state) => state.user);
@@ -94,7 +94,7 @@ const Syncs = (props) => {
 			render: (name) => {
 				return (
 					<>
-						<span>{capitalizeFirstLetter(name)}</span>
+						<span>{name}</span>
 					</>
 				);
 			},
@@ -167,14 +167,32 @@ const Syncs = (props) => {
 			render: (status, data) => {
 				const isEnabled = status === "active";
 				return (
-					<>
+					<div className="d-flex justify-content-center">
 						<Switch
 							checked={isEnabled}
 							onChange={(checked, event) =>
 								handleSwitchChange(checked, event, data)
 							}
 						/>
-					</>
+					</div>
+				);
+			},
+		},
+		{
+			title: "",
+			dataIndex: "",
+			render: (data) => {
+				return (
+					<div className="d-flex justify-content-center">
+						<ArrowRightOutlined
+							className="color-disabled-dark fs-xs"
+							onClick={(event) => {
+								console.log("log:_", data);
+								event.stopPropagation();
+								navigateToSyncRuns(data);
+							}}
+						/>
+					</div>
 				);
 			},
 		},

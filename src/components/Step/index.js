@@ -14,7 +14,7 @@ const StepCpn = (props) => {
 	return (
 		<PageLayout displayHeader={false} layoutStyles={"pl-0 pr-0"}>
 			<Steps
-				className="w-100"
+				className="w-100 mb-3"
 				size="default"
 				current={current}
 				items={items}

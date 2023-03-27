@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import CustomButton from "src/components/Button/Button";
 import DropdownCpn from "src/components/Dropdown";
 import TableCpn from "src/components/Table";
+import Title from "src/components/Title";
 import appConstants from "src/constants/app";
 import buttons from "src/constants/buttons";
 import { connectorTypes, getConnectorSrc } from "src/utils/lib";
@@ -132,6 +133,7 @@ const ConnectionMapping = (props) => {
 		{
 			title: appConstants.WAREHOUSE_FIELD,
 			dataIndex: "name",
+			width: "40%",
 			render: (field) => {
 				return (
 					<DropdownCpn
@@ -146,6 +148,7 @@ const ConnectionMapping = (props) => {
 		{
 			title: appConstants.DESTINATION_FIELD,
 			dataIndex: "destField",
+			width: "40%",
 			render: (field, data) => {
 				return (
 					<Input
@@ -179,19 +182,23 @@ const ConnectionMapping = (props) => {
 		{
 			title: appConstants.DELETE_TEXT,
 			dataIndex: "delete",
+			width: "20%",
 			render: (type, data) => {
 				if (type)
 					return (
-						<DeleteOutlined
-							onClick={() => {
-								let index = data.id;
-								let newArray = destinationFields.filter(
-									(obj) => obj.id !== index
-								);
-								setDestinationFields(newArray);
-								setFields(newArray);
-							}}
-						/>
+						<div className="d-flex justify-content-center">
+							<DeleteOutlined
+								style={{ fontSize: 18 }}
+								onClick={() => {
+									let index = data.id;
+									let newArray = destinationFields.filter(
+										(obj) => obj.id !== index
+									);
+									setDestinationFields(newArray);
+									setFields(newArray);
+								}}
+							/>
+						</div>
 					);
 			},
 		},
@@ -223,6 +230,18 @@ const ConnectionMapping = (props) => {
 		);
 	};
 
+	const getConnectorImage = ({ type, size = 30 }) => {
+		return (
+			<Image
+				src={getConnectorSrc(type)}
+				alt={`connector${type}`}
+				width={size}
+				height={size}
+				className="mr-2"
+			/>
+		);
+	};
+
 	return (
 		<div>
 			<div
@@ -235,33 +254,32 @@ const ConnectionMapping = (props) => {
 					alignItems: "center",
 				}}
 			>
-				<Space size={8}>
-					<div>
-						<Image
-							src={getConnectorSrc(warehouseMeta.type)}
-							alt="me"
-							width="32"
-							height="32"
-							style={{
-								marginRight: 10,
-							}}
+				<div className="d-flex align-items-center mt-3">
+					<div className="d-flex align-items-center">
+						{getConnectorImage({
+							type: warehouseMeta.type,
+						})}
+						<Title
+							title={warehouseMeta.name}
+							classnames={"font-weight-normal"}
+							level={5}
 						/>
-						{warehouseMeta.name}
 					</div>
-					<ArrowRightOutlined />
-					<div>
-						<Image
-							src={getConnectorSrc(destinationMeta.type)}
-							alt="me"
-							width="32"
-							height="32"
-							style={{
-								marginRight: 10,
-							}}
+					<ArrowRightOutlined
+						style={{ fontSize: 18 }}
+						className="ml-3 mr-3"
+					/>
+					<div className="d-flex align-items-center">
+						{getConnectorImage({
+							type: destinationMeta.type,
+						})}
+						<Title
+							title={destinationMeta.name}
+							classnames={"font-weight-normal"}
+							level={5}
 						/>
-						{destinationMeta.name}
 					</div>
-				</Space>
+				</div>
 			</div>
 			{displayDropdown(
 				appConstants.WAREHOUSE_SYNC_MODE,
@@ -283,17 +301,11 @@ const ConnectionMapping = (props) => {
 				onClick={() => {}}
 				displayPagination={false}
 			/>
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "flex-start",
-					marginTop: 20,
-				}}
-			>
+			<div className="d-flex mt-3 justify-content-start">
 				<CustomButton
 					title={buttons.ADD_FIELD_BUTTON}
 					onClick={addField}
-					size="large"
+					size="small"
 					disabled={false}
 				/>
 			</div>
