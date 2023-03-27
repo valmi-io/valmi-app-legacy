@@ -134,9 +134,8 @@ const SpecCpn = (props) => {
 			title = type,
 			airbyte_secret = false,
 		} = value;
-		if (type === "headers") {
-			return null;
-		}
+		// spec type - headers are ignored.
+		if (type === "headers") return null;
 		if (isEnum) {
 			return (
 				<Form.Item

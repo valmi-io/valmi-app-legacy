@@ -1,9 +1,12 @@
 {
 	"extends": [
-		"airbnb",
+		"plugin:@typescript-eslint/recommended",
+		"next",
 		"next/core-web-vitals"
 	],
-	"plugins": [],
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["@typescript-eslint"],
+	"ignorePatterns": ["**/*.js", "**/*.ts"],
 	"rules": {
 		"react/function-component-definition": [
 			2,
@@ -20,7 +23,7 @@
 		"react-hooks/rules-of-hooks": "error",
 		"react-hooks/exhaustive-deps": "warn",
 		"react/require-default-props": 0,
-		"react/prop-types": "error",
+		//"react/prop-types": "error",
 		"react/no-namespace": "off",
 		"react/prefer-exact-props": "off",
 		"react/no-arrow-function-lifecycle": "off",
@@ -46,10 +49,7 @@
 		"react/jsx-filename-extension": [
 			1,
 			{
-				"extensions": [
-					".js",
-					".jsx"
-				]
+				"extensions": [".js", ".jsx"]
 			}
 		],
 		"indent": [
@@ -59,14 +59,8 @@
 				"SwitchCase": 1
 			}
 		],
-		"react/jsx-indent": [
-			2,
-			"tab"
-		],
-		"react/jsx-indent-props": [
-			2,
-			"tab"
-		],
+		"react/jsx-indent": [2, "tab"],
+		"react/jsx-indent-props": [2, "tab"],
 		"no-tabs": 0,
 		"object-curly-newline": 0,
 		"no-lonely-if": 0,
@@ -91,21 +85,14 @@
 		"react/jsx-wrap-multilines": 0,
 		"react/display-name": 0,
 		"linebreak-style": 0,
-        "no-unused-vars": "off",
+		"no-unused-vars": "off",
 		"no-unsafe-optional-chaining": "off"
 	},
 	"settings": {
 		"import/resolver": {
 			"node": {
-				"extensions": [
-					".js",
-					".android.js",
-					".ios.js",
-					".jsx"
-				],
-				"paths": [
-					"./"
-				]
+				"extensions": [".js", ".android.js", ".ios.js", ".jsx"],
+				"paths": ["./"]
 			}
 		}
 	},
