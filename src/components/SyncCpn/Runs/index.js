@@ -40,7 +40,6 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 			if (currentPage === 1) {
 				if (runsData) {
 					setIsRefetching(true);
-					console.log("Start refetching:-");
 					setLastSync(new Date().toISOString());
 					setFetchMore(true);
 				}
@@ -279,9 +278,6 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 		return (
 			<Card.Grid
 				hoverable={false}
-				// style={{
-				// 	boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-				// }}
 				className="bg-white d-flex w-100 cursor-pointer"
 			>
 				<div className="d-flex w-80">
@@ -384,6 +380,37 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 					current: currentPage,
 					onChange: handlePageChange,
 				}}
+				header={
+					<div className="d-flex">
+						{/* <div className="d-flex w-80">
+							<span>Destination</span>
+						</div>
+						<div className="d-flex w-55">
+							<span>Destination</span>
+						</div>
+						<div className="d-flex w-30">
+							<span>Destination</span>
+						</div>
+						<div className="d-flex w-30">
+							<span>Destination</span>
+						</div> */}
+						<span
+							className="d-flex"
+							style={{ marginLeft: "10px", width: "50%" }}
+						>
+							Warehouse
+						</span>
+						<span style={{ width: "25%" }} className="d-flex ">
+							Destination
+						</span>
+						<span className="d-flex" style={{ width: "15%" }}>
+							Started at
+						</span>
+						<span style={{ width: "10%" }} className="d-flex">
+							Status
+						</span>
+					</div>
+				}
 				dataSource={runsData}
 				renderItem={renderSyncRuns}
 				loading={isLoading}
