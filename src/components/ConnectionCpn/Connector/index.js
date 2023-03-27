@@ -37,7 +37,7 @@ const ConnectorCpn = (props) => {
 	}
 
 	return (
-		<div className="d-flex flex-column ml-2">
+		<div className="d-flex flex-column">
 			<Row gutter={12}>
 				{connectors &&
 					connectors.map((connector) => {

@@ -12,10 +12,12 @@ import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import EmptyCpn from "src/components/EmptyCpn";
+import ErrorCpn from "src/components/ErrorCpn";
 import PageLayout from "src/components/Layout/PageLayout";
 import TableCpn from "src/components/Table";
 import appConstants from "src/constants/app";
 import buttons from "src/constants/buttons";
+import errors from "src/constants/errors";
 import routes from "src/constants/routes";
 import { useFetchCredentialsQuery } from "src/store/api/apiSlice";
 import { capitalizeFirstLetter } from "src/utils/lib";
@@ -27,9 +29,12 @@ const Connection = (props) => {
 
 	const router = useRouter();
 
-	const { data, isError, error } = useFetchCredentialsQuery({
-		workspaceId,
-	});
+	const { data, isError, error } = useFetchCredentialsQuery(
+		{
+			workspaceId,
+		},
+		{ refetchOnMountOrArgChange: true }
+	);
 
 	const [sourceConnections, setSourceConnections] = useState([]);
 	const [destinatonConnections, setDestinationConnections] = useState([]);
@@ -66,8 +71,8 @@ const Connection = (props) => {
 
 	useEffect(() => {
 		if (isError) {
-			console.log("Error:-");
 			setConnectionsLoading(false);
+			ErrorCpn(error, errors.ERROR_401);
 		}
 	}, [isError]);
 

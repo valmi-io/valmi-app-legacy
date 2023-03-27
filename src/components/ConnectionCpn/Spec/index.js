@@ -21,9 +21,11 @@ import {
 	useLazyCheckAndAddConnectorSpecQuery,
 	useLazyFetchConnectorSpecQuery,
 } from "src/store/api/apiSlice";
+import { getRandomWord } from "src/utils/lib";
 import CustomButton from "../../Button/Button";
 import DropdownCpn from "../../Dropdown";
 import Title from "../../Title";
+import classes from "./style.module.less";
 
 const SpecCpn = (props) => {
 	const router = useRouter();
@@ -115,11 +117,12 @@ const SpecCpn = (props) => {
 			type: connectorMeta.type,
 			workspaceId: workspaceId,
 			config: payload,
-			name: connectorTitle,
+			name: getRandomWord(),
 		});
 	};
 
 	const getInputCpn = (spec) => {
+		console.log("get input component spec:_", spec);
 		const { value, type, required = false } = spec;
 		let isEnum = false;
 		if (value?.enum) {
@@ -131,6 +134,9 @@ const SpecCpn = (props) => {
 			title = type,
 			airbyte_secret = false,
 		} = value;
+		if (type === "headers") {
+			return null;
+		}
 		if (isEnum) {
 			return (
 				<Form.Item
@@ -193,6 +199,7 @@ const SpecCpn = (props) => {
 				</Form.Item>
 			);
 		}
+
 		return (
 			<Form.Item
 				name={title.split(" ").join("").toLowerCase()}
@@ -216,47 +223,26 @@ const SpecCpn = (props) => {
 				]}
 			>
 				{airbyte_secret ? (
-					<Input.Password
-						style={{
-							height: 50,
-						}}
-						type="password"
-					/>
+					<Input.Password className={classes.input} />
 				) : (
-					<Input
-						style={{
-							height: 50,
-						}}
-					/>
+					<Input className={classes.input} />
 				)}
 			</Form.Item>
 		);
 	};
 
-	return (
-		<div>
-			{isLoading && (
-				<>
-					<Spin tip="Please wait..." />
-				</>
-			)}
+	if (isLoading) {
+		return (
+			<div className="d-flex justify-content-center">
+				<Spin tip="Please wait..." />;
+			</div>
+		);
+	}
 
+	return (
+		<div className="d-flex ">
 			{!isLoading && connectorSpec && (
-				<div
-					style={{
-						textAlign: "left",
-						width: "100%",
-						borderRadius: 10,
-						padding: 10,
-					}}
-				>
-					<Title
-						title={connectorTitle}
-						editable={{
-							onChange: setConnectorTitle,
-						}}
-						level={4}
-					/>
+				<div className="text-left w-100">
 					<Form
 						layout="vertical"
 						onFinish={checkSpec}
@@ -265,21 +251,16 @@ const SpecCpn = (props) => {
 						{connectorSpec.map((spec) => {
 							return getInputCpn(spec);
 						})}
-						<Form.Item
-							style={
-								{
-									// display: "flex",
-									// justifyContent: "flex-end",
-									// marginTop: 20,
-								}
-							}
-							className="d-flex mt-5"
-						>
+						<Form.Item className="d-flex mt-5 justify-content-end">
 							<CustomButton
 								title={"prev"}
 								onClick={prev}
 								size="large"
-								disabled={false}
+								type="text"
+								disabled={checking}
+								style={{
+									color: checking ? "grey" : "green",
+								}}
 							/>
 							<CustomButton
 								loading={checking}

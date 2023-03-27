@@ -14,21 +14,22 @@ import appConstants from "src/constants/app";
 import CustomButton from "src/components/Button/Button";
 import buttons from "src/constants/buttons";
 import { useRouter } from "next/router";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import Title from "src/components/Title";
 
 const NewConnection = (props) => {
+	console.log("New connection props:-", props);
 	const router = useRouter();
-	const formRef = useRef(null);
-	const [currSrcStep, setCurrSrcStep] = useState(0);
-	const [connectorMeta, setConnectorMeta] = useState(null);
-
-	const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
-
 	const { type = "SRC" } = props;
 
 	const user = useSelector((state) => state.user);
 
 	const { workspaceId = "" } = user || {};
+
+	const formRef = useRef(null);
+	const [currSrcStep, setCurrSrcStep] = useState(0);
+	const [connectorMeta, setConnectorMeta] = useState(null);
+
+	const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
 
 	useEffect(() => {
 		if (!connectorMeta) {
@@ -54,13 +55,6 @@ const NewConnection = (props) => {
 		},
 		[steps]
 	);
-
-	const contentStyle = {
-		// textAlign: "center",
-		// borderRadius: 10,
-		// //border: `1px dashed ${"bl"}`,
-		// marginTop: 16,
-	};
 
 	const steps = [
 		{
@@ -96,29 +90,26 @@ const NewConnection = (props) => {
 		<PageLayout
 			displayHeader={false}
 			containerStyles={{
-				width: "70%",
+				width: "60%",
 				height: "100%",
 			}}
 		>
-			<StepCpn
-				steps={steps}
-				current={currSrcStep}
-				contentStyle={contentStyle}
-				headerTitle={"Back to connections"}
-				handleOnClick={() => {
-					router.back();
-				}}
-			>
-				<div className="mt-5 ml-2">
-					{currSrcStep < steps.length - 1 && (
+			<Title
+				title={`Create ${type === "SRC" ? "Warehouse" : "Destination"}`}
+				level={4}
+				classnames={"mb-3"}
+			/>
+			<StepCpn steps={steps} current={currSrcStep}>
+				{currSrcStep < steps.length - 1 && (
+					<div className="mt-3 d-flex justify-content-end">
 						<CustomButton
 							title={buttons.NEXT_BUTTON}
 							onClick={next}
 							size="large"
 							disabled={isNextButtonDisabled}
 						/>
-					)}
-				</div>
+					</div>
+				)}
 			</StepCpn>
 		</PageLayout>
 	);

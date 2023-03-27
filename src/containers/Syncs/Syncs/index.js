@@ -34,9 +34,12 @@ const Syncs = (props) => {
 
 	const router = useRouter();
 	const [syncs, setSyncs] = useState([]);
-	const { data, isLoading, isError, error, refetch } = useFetchSyncsQuery({
-		workspaceId,
-	});
+	const { data, isLoading, isError, error, refetch } = useFetchSyncsQuery(
+		{
+			workspaceId,
+		},
+		{ refetchOnMountOrArgChange: true }
+	);
 
 	const [
 		toggleSync,

@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 
 import CustomButton from "src/components/Button/Button";
 import CardCpn from "src/components/Card";
+import ErrorCpn from "src/components/ErrorCpn";
 import PageLayout from "src/components/Layout/PageLayout";
 import StepCpn from "src/components/Step";
 import ConnectionCpn from "src/components/SyncCpn/Connection";
@@ -19,6 +20,7 @@ import ConnectionScheduleCpn from "src/components/SyncCpn/Schedule";
 import Title from "src/components/Title";
 import appConstants from "src/constants/app";
 import buttons from "src/constants/buttons";
+import errors from "src/constants/errors";
 import {
 	useFetchCredentialsQuery,
 	useLazyAddCredentialsQuery,
@@ -88,7 +90,6 @@ const NewSync = (props) => {
 	useEffect(() => {
 		if (createSyncData) {
 			console.log("=============================");
-			console.log("NewSync:_", createSyncData);
 			message.success("Sync created successfully!");
 			router.push(`/spaces/${workspaceId}/syncs`);
 		}
@@ -96,29 +97,25 @@ const NewSync = (props) => {
 
 	useEffect(() => {
 		if (isCreateSyncError) {
-			console.log(
-				"New sync:_ Error",
-				createSyncError.data.detail?.[0].msg
-			);
-
-			notification.error({
-				message: createSyncError.data.detail?.[0].msg,
-				description: createSyncError.data.detail?.[0].msg,
-			});
+			console.log("Create sync error:_", createSyncError);
+			if (createSyncError.status === 401) {
+				ErrorCpn(createSyncError, errors.SYNC_FAILED);
+			} else {
+				notification.error({
+					message: createSyncError.data.detail?.[0].msg,
+					description: createSyncError.data.detail?.[0].msg,
+				});
+			}
 		}
 	}, [isCreateSyncError]);
 
 	useEffect(() => {
 		if (isError) {
-			// notification.error({
-			// 	message: errors.SIGN_IN_FAILED,
-			// 	description: error.data.non_field_errors[0],
-			// });
+			console.log("is Error:-", isError);
 		}
 	}, [isError]);
 
 	useEffect(() => {
-		// current === 3 (Schedule step)
 		if (current === 3) {
 			if (!syncInterval) {
 				setIsNextButtonDisabled(true);
@@ -142,18 +139,15 @@ const NewSync = (props) => {
 	};
 
 	const setCreateSyncPayload = () => {
-		console.log("Set Create sync payload:_");
-
 		const payload = {
 			src: updatedSourceMeta,
 			dest: updatedDestMeta,
 			schedule: {
 				run_interval: syncInterval * 60 * 1000, // inteval in milliseconds.
 			},
-			syncName: getRandomWord("Source"),
+			syncName: getRandomWord(),
 			workspaceId: workspaceId,
 		};
-		console.log("Create sync payload:_", payload);
 		createSync(payload);
 	};
 	const setConnectorCatalog = (catalog, config) => {
@@ -171,7 +165,6 @@ const NewSync = (props) => {
 			credential_id: id,
 			type: connectorName,
 		};
-		console.log("payload:-", payload);
 		if (type === connectorTypes.SRC) {
 			setSourceConnectorMeta(payload);
 		} else {
@@ -185,7 +178,6 @@ const NewSync = (props) => {
 		destinationSyncMode,
 		primaryKey
 	) => {
-		console.log("primary key:_", primaryKey);
 		if (warehouseSyncMode && destinationSyncMode && primaryKey) {
 			setMappingModes({
 				warehouseSyncMode,
@@ -323,16 +315,6 @@ const NewSync = (props) => {
 		},
 	];
 
-	const contentStyle = {
-		//lineHeight: "260px",
-		textAlign: "center",
-		//color: "orange",
-		//backgroundColor: "green",
-		borderRadius: 10,
-		//border: `1px dashed ${"bl"}`,
-		marginTop: 16,
-	};
-
 	if (isLoading) {
 		return <Spin tip="Please wait..." />;
 	}
@@ -345,67 +327,9 @@ const NewSync = (props) => {
 				height: "100%",
 			}}
 		>
-			{/* <CardCpn containerStyles={{ padding: 10 }}>
-				<StepCpn
-					steps={steps}
-					current={current}
-					contentStyle={contentStyle}
-				>
-					<div
-						style={{
-							display: "flex",
-							justifyContent: "flex-end",
-							marginTop: 20,
-						}}
-					>
-						{current > 0 && (
-							<CustomButton
-								title={"prev"}
-								onClick={prev}
-								size="large"
-								disabled={false}
-								style={{
-									marginRight: 20,
-								}}
-							/>
-						)}
-						{current < steps.length - 1 && (
-							<CustomButton
-								title={buttons.NEXT_BUTTON}
-								onClick={next}
-								size="large"
-								disabled={isNextButtonDisabled}
-							/>
-						)}
-
-						{current === steps.length - 1 && (
-							<CustomButton
-								title={buttons.CREATE_BUTTON}
-								loading={isCreateSyncLoading}
-								onClick={setCreateSyncPayload}
-								size="large"
-								disabled={isNextButtonDisabled}
-							/>
-						)}
-					</div>
-				</StepCpn>
-			</CardCpn> */}
-			<StepCpn
-				steps={steps}
-				current={current}
-				contentStyle={contentStyle}
-				headerTitle={"Back to syncs"}
-				handleOnClick={() => {
-					router.back();
-				}}
-			>
-				<div
-					style={{
-						display: "flex",
-						justifyContent: "flex-end",
-						marginTop: 20,
-					}}
-				>
+			<Title title={"Create Sync"} level={4} classnames={"mb-3"} />
+			<StepCpn steps={steps} current={current}>
+				<div className="d-flex mt-3 justify-content-end">
 					{current > 0 && (
 						<CustomButton
 							title={"prev"}

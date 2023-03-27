@@ -74,6 +74,7 @@ const SyncRuns = ({ syncID, workspaceID }) => {
 
 	useEffect(() => {
 		if (data) {
+			console.log("runs data:_", data);
 			if (isRefetching) {
 				setRunsData(data);
 			} else {

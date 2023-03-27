@@ -14,7 +14,6 @@ const ErrorCpn = (error, title) => {
 	const errorFields = Object.keys(errors);
 
 	console.log("error fields:_", errorFields);
-
 	if (errorFields.length > 0) {
 		errorMsg = errors[errorFields[0]];
 	} else {
@@ -22,6 +21,8 @@ const ErrorCpn = (error, title) => {
 			errorMsg = errorConstants.ERROR_FETCH;
 		}
 	}
+
+	console.log("error message:_", errorMsg);
 
 	notification.error({
 		message: title,

@@ -4,7 +4,7 @@
  * Author: Nagendra S @ valmi.io
  */
 
-import randomWords from "random-words";
+import dockerNames from "docker-names";
 
 export const capitalizeFirstLetter = (str) => {
 	return str.charAt(0).toUpperCase() + str.slice(1);
@@ -21,13 +21,6 @@ export const getConnectorSrc = (connectorType) => {
 	return `/connectors/${connectorType.toLowerCase()}.svg`;
 };
 
-export const getRandomWord = (prefix) => {
-	const options = {
-		exactly: 1, // generate exactly one word
-		maxLength: 10, // maximum length of the word
-		formatter: (word) => `${prefix} ${word}`, // add "Source" prefix to the word
-		//filter: "adjectives", // filter words related to technology
-	};
-
-	return randomWords(options)[0]; // generate a random word with "Source" prefix
+export const getRandomWord = () => {
+	return dockerNames.getRandomName();
 };

@@ -10,13 +10,7 @@ import { Form, InputNumber, Space } from "antd";
 const ConnectionScheduleCpn = (props) => {
 	const { syncInterval, setSyncInterval } = props;
 	return (
-		<Form
-			layout="vertical"
-			onFinish={() => {
-				console.log("on finish:_");
-			}}
-			requiredMark={false}
-		>
+		<Form layout="vertical" requiredMark={false}>
 			<Form.Item
 				name={"Schedule"}
 				label={"Schedule"}
@@ -40,19 +34,21 @@ const ConnectionScheduleCpn = (props) => {
 					},
 				]}
 			>
-				<InputNumber
-					value={syncInterval}
-					controls={false}
-					onChange={setSyncInterval}
-					size="large"
-					maxLength={4}
-					style={{
-						height: 50,
-						width: "100%",
-						display: "flex",
-						alignItems: "center",
-					}}
-				/>
+				<div className="d-flex align-items-center mt-2">
+					<span>Every</span>
+					<InputNumber
+						value={syncInterval}
+						controls={false}
+						onChange={setSyncInterval}
+						size="large"
+						maxLength={4}
+						style={{
+							height: 50,
+						}}
+						className="d-flex w-100 align-items-center ml-2 mr-2"
+					/>
+					<span>minutes</span>
+				</div>
 			</Form.Item>
 		</Form>
 	);

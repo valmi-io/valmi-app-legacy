@@ -4,7 +4,7 @@ import CardCpn from "../Card";
 import PageLayout from "../Layout/PageLayout";
 
 const StepCpn = (props) => {
-	const { steps, current, contentStyle, children } = props;
+	const { steps, current, contentStyle = {}, children } = props;
 
 	const items = steps.map((item) => ({
 		key: item.title,
@@ -12,11 +12,9 @@ const StepCpn = (props) => {
 	}));
 
 	return (
-		<PageLayout displayHeader={false}>
+		<PageLayout displayHeader={false} layoutStyles={"pl-0 pr-0"}>
 			<Steps
-				style={{
-					width: "100%",
-				}}
+				className="w-100"
 				size="default"
 				current={current}
 				items={items}
