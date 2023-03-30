@@ -8,7 +8,7 @@ WORKDIR /app
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 
 # Copy the package.json and yarn.lock files to the container
-COPY package.json yarn.lock ./
+COPY package.json ./
 
 # Install the application dependencies using Yarn
 RUN yarn install
