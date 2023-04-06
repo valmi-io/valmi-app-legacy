@@ -4,5 +4,6 @@
 	},
 	"eslint.validate": ["javascript"],
 	"psi-header.changes-tracking": {},
-	"psi-header.templates": []
+	"psi-header.templates": [],
+	"editor.defaultFormatter": "esbenp.prettier-vscode"
 }
