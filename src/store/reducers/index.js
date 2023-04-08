@@ -8,10 +8,12 @@ import { combineReducers } from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
 import { auth } from "./auth";
 import { user } from "./user";
+import { app } from "./app";
 
 const rootReducer = combineReducers({
 	[auth.name]: auth.reducer,
 	[user.name]: user.reducer,
+	[app.name]: app.reducer,
 	[apiSlice.reducerPath]: apiSlice.reducer,
 });
 

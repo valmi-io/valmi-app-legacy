@@ -9,7 +9,6 @@ import { Card, Col, Row, Spin } from "antd";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useFetchConnectorsQuery } from "src/store/api/apiSlice";
-import Title from "src/components/Title";
 
 const ConnectorCpn = (props) => {
 	const { handleConnectorSelected, type } = props;
@@ -19,7 +18,7 @@ const ConnectorCpn = (props) => {
 
 	useEffect(() => {
 		if (data) {
-			console.log("data:_", data);
+			console.log("Connector data:_", data);
 			if (data[type]) {
 				setConnectors(data[type]);
 			}
@@ -45,7 +44,11 @@ const ConnectorCpn = (props) => {
 			<Row gutter={12}>
 				{connectors &&
 					connectors.map((connector) => {
-						const type = connector.type.split("_")[1];
+						const type = connector.type
+							.split("_")
+							.slice(1)
+							.join("_");
+
 						return (
 							<Col
 								key={connector.type}
@@ -105,16 +108,16 @@ const ConnectorCpn = (props) => {
 	);
 };
 
-const propTypes = {
-	type: PropTypes.oneOf(["SRC", "DEST"]).isRequired,
-	handleConnectorSelected: PropTypes.func,
-};
+// const propTypes = {
+// 	type: PropTypes.oneOf(["SRC", "DEST"]).isRequired,
+// 	handleConnectorSelected: PropTypes.func,
+// };
 
-const defaultProps = {
-	type: "SRC",
-};
+// const defaultProps = {
+// 	type: "SRC",
+// };
 
-ConnectorCpn.propTypes = propTypes;
-ConnectorCpn.defaultProps = defaultProps;
+// ConnectorCpn.propTypes = propTypes;
+// ConnectorCpn.defaultProps = defaultProps;
 
 export default ConnectorCpn;

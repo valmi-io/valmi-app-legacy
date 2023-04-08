@@ -19,9 +19,11 @@ import Title from "src/components/Title";
 const NewConnection = (props) => {
 	console.log("New connection props:-", props);
 	const router = useRouter();
+	const { from_oauth = false } = router.query;
 	const { type = "SRC" } = props;
 
 	const user = useSelector((state) => state.user);
+	const app = useSelector((state) => state.app);
 
 	const { workspaceId = "" } = user || {};
 
@@ -30,6 +32,12 @@ const NewConnection = (props) => {
 	const [connectorMeta, setConnectorMeta] = useState(null);
 
 	const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+	useEffect(() => {
+		if (from_oauth) {
+			setConnectorMeta(app.selectedConnector);
+			setCurrSrcStep(1);
+		}
+	}, []);
 
 	useEffect(() => {
 		if (!connectorMeta) {
@@ -81,6 +89,7 @@ const NewConnection = (props) => {
 					workspaceId={workspaceId}
 					prev={prev}
 					formRef={formRef}
+					from_oauth={from_oauth}
 				/>
 			),
 		},

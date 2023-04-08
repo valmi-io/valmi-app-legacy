@@ -56,7 +56,7 @@ export const makeStore = () => {
 
 		const persistConfig = {
 			key: "app",
-			whitelist: ["auth", "user"], // make sure it does not clash with server keys
+			whitelist: ["auth", "user", "app"], // make sure it does not clash with server keys
 			storage,
 		};
 

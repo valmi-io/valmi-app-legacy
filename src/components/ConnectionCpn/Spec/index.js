@@ -16,25 +16,72 @@ import {
 } from "antd";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import buttons from "src/constants/buttons";
 import {
 	useLazyCheckAndAddConnectorSpecQuery,
 	useLazyFetchConnectorSpecQuery,
 } from "src/store/api/apiSlice";
-import { getRandomWord } from "src/utils/lib";
+import { capitalizeFirstLetter, getRandomWord } from "src/utils/lib";
 import CustomButton from "../../Button/Button";
 import DropdownCpn from "../../Dropdown";
-import Title from "../../Title";
 import classes from "./style.module.less";
+import { setSelectedConnector, setSpec } from "src/store/reducers/app";
+import { useDispatch, useSelector } from "react-redux";
+import { generate_config_from_spec } from "./config_generator";
 
 const SpecCpn = (props) => {
-	const router = useRouter();
+	function processConnectorSpec(data) {
+		//Ignore oauth2.0 root object
+		if (data.spec.authSpecification?.oauth2Specification) {
+			const {
+				spec: {
+					authProvider,
+					authSpecification: {
+						oauth2Specification: { rootObject },
+					},
+				},
+			} = data;
+			setOauthRootObject(rootObject[0]);
+			if (authProvider) {
+				setAuthProvider(capitalizeFirstLetter(authProvider));
+			}
+		}
 
-	const { connectorMeta, workspaceId, prev } = props;
+		const {
+			spec: {
+				connectionSpecification: { properties, required, title },
+			},
+		} = data;
+		const specArr = [];
+		Object.keys(properties).map((key) => {
+			specArr.push({
+				type: key,
+				value: properties[key],
+				required: required.includes(key),
+			});
+		});
+
+		//console.log("Spec arr:-", specArr);
+		setConnectorSpec(specArr);
+
+		setConnectorTitle(title);
+	}
+
+	const router = useRouter();
+	const dispatch = useDispatch();
+	const app = useSelector((state) => state.app);
+
+	const { connectorMeta, workspaceId, prev, from_oauth } = props;
+
 	const [connectorSpec, setConnectorSpec] = useState([]);
 	const [connectorTitle, setConnectorTitle] = useState("");
-	const [destConnectorMethod, setDestConnectorMethod] = useState("");
+	const [otherFormValues, setOtherFormValues] = useState({});
+	const [authProvider, setAuthProvider] = useState(null);
+	const [oauthButton, showOAuthButton] = useState(false);
+	const [oauthRootObject, setOauthRootObject] = useState(null);
 
+	const [oauthValues, setOauthValues] = useState(null);
 	const [fetchConnectorSpec, { data, isLoading }] =
 		useLazyFetchConnectorSpecQuery();
 
@@ -44,32 +91,25 @@ const SpecCpn = (props) => {
 	] = useLazyCheckAndAddConnectorSpecQuery();
 
 	useEffect(() => {
-		fetchConnectorSpec({
-			type: connectorMeta.type,
-			workspaceId: workspaceId,
-		});
+		if (!from_oauth) {
+			fetchConnectorSpec({
+				type: connectorMeta.type,
+				workspaceId: workspaceId,
+			});
+		} else {
+			setOauthValues(app.query);
+			processConnectorSpec(app.spec);
+		}
 	}, []);
 
 	useEffect(() => {
 		if (data) {
 			console.log("Spec data:_", data);
-			const {
-				spec: {
-					connectionSpecification: { properties, required, title },
-				},
-			} = data;
 
-			const specArr = [];
-			Object.keys(properties).map((key) => {
-				specArr.push({
-					type: key,
-					value: properties[key],
-					required: required.includes(key),
-				});
-			});
-			setConnectorTitle(title);
-			console.log("Spec arr:-", specArr);
-			setConnectorSpec(specArr);
+			// saving state
+			dispatch(setSelectedConnector(connectorMeta));
+			dispatch(setSpec(data));
+			processConnectorSpec(data);
 		}
 	}, [data]);
 
@@ -91,7 +131,7 @@ const SpecCpn = (props) => {
 
 	const checkSpec = (values) => {
 		let payload = {};
-		if (connectorMeta.type === "DEST_WEBHOOK") {
+		/*if (connectorMeta.type === "DEST_WEBHOOK") {
 			const { authorizationheader, url } = values;
 			payload = {
 				config: {
@@ -111,18 +151,19 @@ const SpecCpn = (props) => {
 					password,
 				},
 			};
-		}
+		}*/
+		let combinedValues = { ...values, ...otherFormValues, ...oauthValues };
+		let config = generate_config_from_spec(app.spec, combinedValues);
 
 		checkConnectorSpec({
 			type: connectorMeta.type,
 			workspaceId: workspaceId,
-			config: payload,
+			config: { config: config },
 			name: getRandomWord(),
 		});
 	};
 
 	const getInputCpn = (spec) => {
-		console.log("get input component spec:_", spec);
 		const { value, type, required = false } = spec;
 		let isEnum = false;
 		if (value?.enum) {
@@ -154,8 +195,9 @@ const SpecCpn = (props) => {
 				>
 					<DropdownCpn
 						onItemSelected={(val) => {
-							console.log("On item selected", val);
-							setDestConnectorMethod(val.label);
+							// 	console.log("On item selected", val);
+							otherFormValues[type] = val.label;
+							setOtherFormValues(otherFormValues);
 						}}
 						connections={value.enum}
 					/>
@@ -165,7 +207,7 @@ const SpecCpn = (props) => {
 		if (inputType === "integer") {
 			return (
 				<Form.Item
-					name={title.split(" ").join("").toLowerCase()}
+					name={type}
 					key={type}
 					label={title}
 					tooltip={{
@@ -201,7 +243,7 @@ const SpecCpn = (props) => {
 
 		return (
 			<Form.Item
-				name={title.split(" ").join("").toLowerCase()}
+				name={type}
 				key={type}
 				label={title}
 				tooltip={{
@@ -238,44 +280,80 @@ const SpecCpn = (props) => {
 		);
 	}
 
+	let oauthComponent = () => {
+		if (oauthRootObject) {
+			if (from_oauth) {
+				return (
+					<div className="d-flex justify-content-center">
+						<Spin tip="Creating connection..." />;
+					</div>
+				);
+			} else {
+				return (
+					<div className="w-100 justify-content-center">
+						<Link
+							href="/api/login?url=/spaces/30224d7c-a795-452a-910e-6c280b410373/syncs"
+							passHref
+						>
+							<CustomButton
+								title={`Sign in with ${authProvider}`}
+								onClick={() => {}}
+								size="small"
+								disabled={false}
+							/>
+						</Link>
+					</div>
+				);
+			}
+		} else {
+			return null;
+		}
+	};
+
 	return (
 		<div className="d-flex ">
-			{!isLoading && connectorSpec && (
-				<div className="text-left w-100">
-					<Form
-						layout="vertical"
-						onFinish={checkSpec}
-						requiredMark={false}
-					>
-						{connectorSpec.map((spec) => {
-							return getInputCpn(spec);
-						})}
-						<Form.Item className="d-flex mt-3 justify-content-end">
-							<CustomButton
-								title={"Back"}
-								onClick={prev}
-								size="small"
-								type="text"
-								disabled={checking}
-								className={`mr-3 ${
-									checking
-										? "color-disabled"
-										: "color-primary"
-								}`}
-							/>
-							<CustomButton
-								loading={checking}
-								disabled={checking}
-								htmlType="submit"
-								title={buttons.CREATE_CONNECTION_BUTTON}
-								size="small"
-								style={{
-									marginLeft: 20,
-								}}
-							/>
-						</Form.Item>
-					</Form>
-				</div>
+			{connectorSpec && (
+				<>
+					{oauthComponent()}
+
+					<div className="text-left w-100">
+						<Form
+							layout="vertical"
+							onFinish={checkSpec}
+							requiredMark={false}
+						>
+							{connectorSpec.map((spec) => {
+								if (spec.type !== oauthRootObject) {
+									return getInputCpn(spec);
+								}
+							})}
+							<Form.Item className="d-flex mt-3 justify-content-end">
+								<CustomButton
+									title={"Back"}
+									onClick={prev}
+									size="small"
+									type="text"
+									disabled={checking}
+									className={`mr-3 ${
+										checking
+											? "color-disabled"
+											: "color-primary"
+									}`}
+								/>
+								<CustomButton
+									loading={checking}
+									disabled={checking}
+									htmlType="submit"
+									title={buttons.CREATE_CONNECTION_BUTTON}
+									size="small"
+									style={{
+										marginLeft: 20,
+									}}
+								/>
+							</Form.Item>
+						</Form>
+					</div>
+				</>
 			)}
 		</div>
 	);

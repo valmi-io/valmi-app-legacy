@@ -1,6 +1,7 @@
 import React from "react";
 import Head from "src/components/Head";
 import Syncs from "src/containers/Syncs/Syncs";
+
 const propTypes = {};
 
 const defaultProps = {};
