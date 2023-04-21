@@ -50,7 +50,7 @@ const ConnectionMapping = (props) => {
 
 	useEffect(() => {
 		if (destCatalog.length > 0) {
-			const syncModes = destCatalog[0].supported_sync_modes;
+			const syncModes = destCatalog[0].supported_destination_sync_modes;
 			setDestinationSupportedSyncs(syncModes);
 		} else {
 			setDestinationSupportedSyncs["upsert"];
@@ -58,26 +58,16 @@ const ConnectionMapping = (props) => {
 	}, []);
 
 	useEffect(() => {
-		const columns = Object.entries(properties);
+		const columns = Object.keys(properties);
 		let fields = [];
 		for (let i = 0; i < columns.length; i++) {
-			const columnType = columns[i][1].type;
-			const propType = columnType.substring(
-				columnType.indexOf("(") + 1,
-				columnType.lastIndexOf(")")
-			);
-			const columnNameRegex = /<Column\s+(\w+)\s+\((.*)\)>/i;
-			const match = columnType.match(columnNameRegex);
-
-			if (match) {
-				const columnName = match[1];
-				let prop = {
-					id: i,
-					name: columnName,
-					type: propType,
-				};
-				fields.push(prop);
-			}
+			const dtype = properties[columns[i]].type
+			let prop = {
+				id: i,
+				name: columns[i],
+				type: dtype,
+			};
+			fields.push(prop);
 		}
 		setWarehouseFields(fields);
 	}, []);

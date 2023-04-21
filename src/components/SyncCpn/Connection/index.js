@@ -22,6 +22,8 @@ const ConnectionCpn = ({
 	const [connectorConfig, setConnectorConfig] = useState(null);
 	const [discoverConnector, setDiscoverConnector] = useState(false);
 
+	const [extConfigParams, setExtConfigParams] = useState({});
+
 	const [discoverConnectorSpec, { data, isError }] =
 		useLazyDiscoverConnectorQuery();
 
@@ -88,7 +90,11 @@ const ConnectionCpn = ({
 		}
 		const obj = {};
 		obj[connectorSchema] = stream.label;
-		const catalog = Object.assign({}, config, obj);
+		const extendedParams = {...extConfigParams, ...obj}
+		setExtConfigParams(extendedParams)
+		console.log("extConfig",extConfigParams);
+		console.log("obj", obj)
+		const catalog = Object.assign({}, config, extendedParams);
 		const payload = {
 			config: catalog,
 			connectorType,
