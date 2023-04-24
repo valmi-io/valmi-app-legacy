@@ -1,32 +1,30 @@
 
-import { Strategy as SlackStrategy } from "./passport-slack/index";
-import { redirect } from "next/dist/server/api-utils";
+import { Profile, Strategy as HubspotStrategy } from "passport-hubspot-auth";
 import passport from "passport";
 
 // logic to save your user or check if user exists in your record to proceed.
-const saveUser = (user) => {
-	//console.log(user);
+const saveUser = (user: Profile) => {
   return new Promise((resolve, reject) => {
     resolve("Successful");
   });
 };
 
 passport.use(
-  new SlackStrategy(
+  new HubspotStrategy(
     {
-      clientID: process.env.AUTH_SLACK_CLIENT_ID as string,
-      clientSecret: process.env.AUTH_SLACK_CLIENT_SECRET as string,
-		user_scope: ['identity.basic','identity.email'],
-		scope: ['users.profile:read','chat:write','channels:read','channels:join'], // default,
-		callbackURL: '/api/oauth2/redirect/slack',
+      clientID: process.env.AUTH_HUBSPOT_CLIENT_ID as string,
+      clientSecret: process.env.AUTH_HUBSPOT_CLIENT_SECRET as string,
+      callbackURL: "/api/oauth2/redirect/hubspot", // this is the endpoint you registered on google while creating your app. This endpoint would exist on your application for verifying the authentication
+	  passReqToCallback   : true,
 
-    },
-    async (accessToken, params, profile, cb: any) => {
+	},
+    async (req, _accessToken, _refreshToken, profile, cb: any) => {
       try {
-		//console.log(profile);
-		profile["_accessToken"] = accessToken;
-		profile["_refreshToken"] = null;
-		profile["_bot_user_id"] = params.bot_user_id;
+		//console.log("accessToken",_accessToken);
+		//console.log("refreshToken",_refreshToken);
+		//console.log("profile",profile);
+		profile["_accessToken"] = _accessToken;
+		profile["_refreshToken"] = _refreshToken;
         await saveUser(profile);
         return cb(null, profile);
       } catch (e: any) {

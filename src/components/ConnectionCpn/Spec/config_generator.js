@@ -9,7 +9,7 @@ export function generate_config_from_spec(spec, values) {
 function create_json_object(required, properties_def, values) {
 	let obj = {};
 	for (const field of required) {
-		if (properties_def[field].type == "object") {
+		if (properties_def[field].type === "object") {
 			obj[field] = create_json_object(
 				properties_def[field].required,
 				properties_def[field].properties,
