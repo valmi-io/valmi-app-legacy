@@ -17,14 +17,16 @@ passport.use(
       clientID: process.env.AUTH_SLACK_CLIENT_ID as string,
       clientSecret: process.env.AUTH_SLACK_CLIENT_SECRET as string,
 		user_scope: ['identity.basic','identity.email'],
-		scope: ['users.profile:read','chat:write','channels:read'], // default,
+		scope: ['users.profile:read','chat:write','channels:read','channels:join'], // default,
 		callbackURL: 'https://localhost/api/oauth2/redirect/slack',
 
     },
-    async (accessToken, refreshToken, profile, cb: any) => {
+    async (accessToken, params, profile, cb: any) => {
       try {
+		//console.log(profile);
 		profile["_accessToken"] = accessToken;
-		profile["_refreshToken"] = refreshToken;
+		profile["_refreshToken"] = null;
+		profile["_bot_user_id"] = params.bot_user_id;
         await saveUser(profile);
         return cb(null, profile);
       } catch (e: any) {

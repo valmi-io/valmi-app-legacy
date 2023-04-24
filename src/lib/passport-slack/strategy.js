@@ -76,6 +76,7 @@ function Strategy (options, verify) {
 			bot: refreshToken
 		  };*/
  		  self._oauth2.profile = results.authed_user
+
 		  callback(null, accessToken, null, results);
       }
 

@@ -17,7 +17,9 @@ export default nextConnect().get(
 				req.user["_accessToken"] +
 				"&refresh_token=" +
 				req.user["_refreshToken"] +
-				"email=" +
+				"&bot_user_id=" +
+				req.user["_bot_user_id"] +
+				"&email=" +
 				req.user.profile.email +
 				"&unique_id=" +
 				req.user.profile.email +
