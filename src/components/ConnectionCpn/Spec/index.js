@@ -44,7 +44,7 @@ const SpecCpn = (props) => {
 			} = data;
 			setOauthRootObject(rootObject[0]);
 			if (authProvider) {
-				setAuthProvider(capitalizeFirstLetter(authProvider));
+				setAuthProvider(authProvider);
 			}
 		}
 
@@ -289,14 +289,19 @@ const SpecCpn = (props) => {
 					</div>
 				);
 			} else {
+				const arr = authProvider.split("$$");
+				const provider = arr[0];
+				const subprovider = null;
+				if (arr.length > 1)
+					subprovider= authProvider[1] ;
 				return (
 					<div className="w-100 justify-content-center">
 						<Link
-							href="/api/login?url=/spaces/30224d7c-a795-452a-910e-6c280b410373/syncs"
+							href={`/api/${provider}/login?subprovider=${subprovider}&url=/spaces/30224d7c-a795-452a-910e-6c280b410373/syncs`}
 							passHref
 						>
 							<CustomButton
-								title={`Sign in with ${authProvider}`}
+								title={`Sign in with ${capitalizeFirstLetter(provider)}`}
 								onClick={() => {}}
 								size="small"
 								disabled={false}
